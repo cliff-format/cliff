@@ -1,11 +1,11 @@
-# CLIF Standards Reference Library
+# CLIFF Standards Reference Library
 
-CLIF reuses established standards wherever possible. This is the normative
+CLIFF reuses established standards wherever possible. This is the normative
 list of external references for implementers and translation-quality tooling.
 
 ## Languages and locales
 
-| Standard | Use in CLIF |
+| Standard | Use in CLIFF |
 | --- | --- |
 | [BCP 47 / RFC 5646 — Tags for Identifying Languages](https://www.rfc-editor.org/rfc/bcp/bcp47.txt) | Values of `source-language`, `target-language`, and the language segment of the file name |
 | [Unicode CLDR](https://cldr.unicode.org/) | Plural rules, locale data, display-name data for ICU expansion |
@@ -13,18 +13,18 @@ list of external references for implementers and translation-quality tooling.
 
 ## Translation interchange and process
 
-| Standard | Use in CLIF |
+| Standard | Use in CLIFF |
 | --- | --- |
 | [XLIFF 2.1 — OASIS Standard](https://docs.oasis-open.org/xliff/v2.1/os/xliff-core-v2.1-os.html) | Data-model reference: file/group/unit, `source`/`target`, `state` |
 | [XLIFF 2.2 Part 2: Extended](https://docs.oasis-open.org/xliff/xliff-core/v2.2/cs01/xliff-extended-v2.2-cs01-part2.html) | Optional modules; the glossary module is the model for `variant: glossary` |
-| [GNU gettext PO Files](https://www.gnu.org/software/gettext/manual/html_node/PO-Files.html) | Legacy interchange; CLIF fixes its "comments as data" flaw |
+| [GNU gettext PO Files](https://www.gnu.org/software/gettext/manual/html_node/PO-Files.html) | Legacy interchange; CLIFF fixes its "comments as data" flaw |
 | [ISO 17100 — Translation services requirements](https://www.iso.org/standard/59149.html) | Quality baseline for human translation process (status model rationale) |
 | [W3C ITS 2.0](https://www.w3.org/TR/its20/) | Internationalization metadata concepts (context, terminology) |
-| [Fluent 1.0](https://projectfluent.org/) | Line-oriented localization lessons; `-term` informs CLIF's glossary variant |
+| [Fluent 1.0](https://projectfluent.org/) | Line-oriented localization lessons; `-term` informs CLIFF's glossary variant |
 
 ## Message formatting and ICU
 
-| Standard | Use in CLIF |
+| Standard | Use in CLIFF |
 | --- | --- |
 | [Unicode TR35 LDML Part 9 — MessageFormat](https://www.unicode.org/reports/tr35/tr35-messageFormat.html) | MF1 and MF2 syntax accepted verbatim inside strings |
 | [ICU MessageFormat documentation](https://unicode-org.github.io/icu/userguide/format_parse/messages/) | Practical ICU guidance |
@@ -32,7 +32,7 @@ list of external references for implementers and translation-quality tooling.
 
 ## Text metrics
 
-| Standard | Use in CLIF |
+| Standard | Use in CLIFF |
 | --- | --- |
 | [UAX #11 — East Asian Width](https://www.unicode.org/reports/tr11/) | `max-width` display-cell metric |
 | [UAX #29 — Unicode Text Segmentation](https://www.unicode.org/reports/tr29/) | Grapheme clusters for emoji width measurement |
@@ -40,7 +40,7 @@ list of external references for implementers and translation-quality tooling.
 
 ## Formats studied for syntax design
 
-| Format | What CLIF learned |
+| Format | What CLIFF learned |
 | --- | --- |
 | [JSON (RFC 8259)](https://www.rfc-editor.org/rfc/rfc8259) | What *not* to do under LLM editing; quote discipline |
 | [CSV (RFC 4180)](https://www.rfc-editor.org/rfc/rfc4180) | Flat is cheap but insufficient |
@@ -51,7 +51,7 @@ list of external references for implementers and translation-quality tooling.
 
 ## Terminology and quality evaluation conventions
 
-- Terminology should be checked first against the project glossary (CLIF
+- Terminology should be checked first against the project glossary (CLIFF
   `variant: glossary` files), then, where applicable, against the
   [Microsoft Language Portal](https://www.microsoft.com/en-us/language)
   (software terms) and [IATE](https://iate.europa.eu/) (institutional terms).
@@ -69,7 +69,7 @@ list of external references for implementers and translation-quality tooling.
 
 ## Status mapping with XLIFF
 
-| CLIF | XLIFF 2.1/2.2 `state` |
+| CLIFF | XLIFF 2.1/2.2 `state` |
 | --- | --- |
 | `initial` | `initial` |
 | `translated` | `translated` |

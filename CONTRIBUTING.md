@@ -1,20 +1,20 @@
-# Contributing to CLIF
+# Contributing to CLIFF
 
-CLIF is an open format specification. Contributions are welcome in the same
+CLIFF is an open format specification. Contributions are welcome in the same
 spirit as YAML and TOML: clear, conservative, and testable.
 
 This repository contains the **specification only**. Test suites, the
 reference validator, and the token benchmark live in the separate
-[clif-test](https://github.com/clif-format/clif-test) project; interoperability tools may be separate
+[cliff-test](https://github.com/cliff-format/cliff-test) project; interoperability tools may be separate
 projects as well.
 
 ## What we need
 
 1. **Issues** — ambiguity reports, parser edge cases, and real-world
-   localization scenarios CLIF handles poorly.
+   localization scenarios CLIFF handles poorly.
 2. **Spec changes** — small, motivated changes to
-   `spec/clif-1.0.0.md` with a corresponding update to:
-   - `spec/abnf/clif-1.0.abnf`
+   `spec/cliff-1.0.0.md` with a corresponding update to:
+   - `spec/abnf/cliff-1.0.abnf`
    - `spec/examples/`
    - `docs/design-rationale.md`
 3. **Reference-library updates** — standards, emotion tags, and status tags in
@@ -31,7 +31,7 @@ projects as well.
 - Do not introduce multi-line structural constructs. This is the core
   invariant of the format.
 - Spec changes that affect validation must be accompanied by a matching change
-  in the `clif-test` validator and fixtures.
+  in the `cliff-test` validator and fixtures.
 
 ## License
 

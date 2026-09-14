@@ -1,4 +1,4 @@
-# CLIF Emotion Tag Reference
+# CLIFF Emotion Tag Reference
 
 `emotion` accepts only the following 23 tags. Tags are case-sensitive,
 lowercase, single standard American English words. The value is always a
@@ -58,7 +58,7 @@ The set covers:
 - common delivery styles (`neutral`, `calm`, `urgent`, `serious`, `playful`);
 - social registers needed for translation (`formal`, `informal`, `polite`,
   `rude`);
-- CLIF-specific working tones: `objective` (informational default) and
+- CLIFF-specific working tones: `objective` (informational default) and
   `mechanical` (robot delivery);
 - common narrative needs (`romantic`, `hopeful`, `grateful`, `anxious`,
   `nostalgic`).

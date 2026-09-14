@@ -1,17 +1,17 @@
-# CLIF Design Rationale
+# CLIFF Design Rationale
 
-This document records **why** CLIF looks the way it does. It follows the
+This document records **why** CLIFF looks the way it does. It follows the
 tradition of the YAML and TOML design documents: every syntax decision has a
 recorded reason.
 
 ## 1. Why a working format, not an interchange format
 
 XLIFF calls itself an "Interchange File Format": its job is moving data
-between tools. CLIF's job is bigger: **one lossless file for the whole
+between tools. CLIFF's job is bigger: **one lossless file for the whole
 lifecycle** — extraction, translation, review, delivery. Interchange is one
 function of that file, not its identity.
 
-CLIF is named **Integrated** because it is a working format, not merely an
+CLIFF is named **Integrated** because it is a working format, not merely an
 interchange wrapper, and its README states goals, non-goals, and implementation
 artifacts the way TOML, YAML, WHATWG HTML, and GeoJSON do.
 
@@ -21,7 +21,7 @@ XLIFF is a tree (`<file><group><unit>...`) and JSON is a tree. Trees are
 machine-friendly but hostile to autoregressive LLM editing: a deep edit must
 keep every ancestor open and align every closing tag.
 
-CLIF is a flat sequence of typed lines. The current section sets the context
+CLIFF is a flat sequence of typed lines. The current section sets the context
 path; the `<id>` marker starts a record; `key: value` lines attach to the
 nearest record positionally, and their indentation carries no meaning.
 Inserting, deleting, or rewriting one line can never leave an
@@ -41,7 +41,7 @@ in".
 
 ## 4. Why `:` and `=` both, and why canonical is `key: value`
 
-- `key: value` is the CLIF-native form; `key = value` is what INI/TOML users
+- `key: value` is the CLIFF-native form; `key = value` is what INI/TOML users
   expect and what many humans reflexively type.
 - Accepting both costs a parser one token of lookahead ("first `=` or `:`
   outside a string") and costs nothing in ambiguity, because keys are
@@ -50,7 +50,7 @@ in".
   canonical serializer always emits `key: value` with exactly one space. This
   keeps determinism for machines while being forgiving to humans — the YAML
   lesson applied in the opposite direction: YAML paid a huge complexity price
-  for permissive whitespace, so CLIF permits whitespace only where it cannot
+  for permissive whitespace, so CLIFF permits whitespace only where it cannot
   change meaning.
 - Long values may wrap across physical lines as C-style adjacent quoted
   strings for any scalar string field (`source`, `target`, `info`,
@@ -65,7 +65,7 @@ in".
 
 ## 5. Why identifiers are lowercase kebab-case only
 
-CLIF restricts all names to lowercase kebab-case everywhere: keys, IDs, group
+CLIFF restricts all names to lowercase kebab-case everywhere: keys, IDs, group
 segments, and fixed tags. Mixed case and snake case would create real problems:
 
 - LLMs drift between `InvSwordIron`, `inv_sword_iron`, and `inv-sword-iron`,
@@ -76,15 +76,15 @@ segments, and fixed tags. Mixed case and snake case would create real problems:
 One rule, zero choices: `[a-z][a-z0-9-]*`. Language tags remain BCP 47 and
 keep their own casing rules, because they are not names.
 
-## 6. Why the canonical layout is `<target-language>/<clan>.clif`
+## 6. Why the canonical layout is `<target-language>/<clan>.cliff`
 
 - A large project has many clans and many languages. Unreal Engine's
   convention — one folder per language — makes the **delivery boundary** the
   **directory boundary**: the Japanese team checks out and ships `ja-JP/`,
   the Spanish team `es-ES/`, CI diffs stay inside one folder, and a language
-  pack is the folder itself. The flat layout (`settings.zh-CN.clif`) would
+  pack is the folder itself. The flat layout (`settings.zh-CN.cliff`) would
   put hundreds of mixed files in one directory.
-- The flat name `<clan>.<target-language>.clif` remains valid for
+- The flat name `<clan>.<target-language>.cliff` remains valid for
   single-language projects and small tools; the two layouts resolve to the
   same two facts (clan, target language) and conflict is an error.
 - The header is authoritative: `namespace`, `clan`, `source-language`, and
@@ -98,7 +98,7 @@ keep their own casing rules, because they are not names.
 
 ## 7. Why the header is small and generic
 
-CLIF keeps a small, generic header:
+CLIFF keeps a small, generic header:
 
 - identity (`namespace`, `clan`, `source-language`, `target-language`,
   `variant`) — all four identity/language fields are required, and authoring
@@ -131,7 +131,7 @@ discourse translation).
 
 Requiring `emotion` on every entry would add tokens without adding
 information: a settings label is objective by default, and a line of dialogue
-is neutral until annotated. CLIF therefore:
+is neutral until annotated. CLIFF therefore:
 
 - adds `objective` (informational default) and `mechanical` (robot delivery)
   to the emotion vocabulary;
@@ -152,7 +152,7 @@ omit `target`. The cost is one short line per entry.
 
 Speaker, listener, and scene are useful for game dialogue but not universal,
 and an optional field would be skipped by developers exactly as often as a
-free-text field. CLIF folds attribution into `context` prose and does not
+free-text field. CLIFF folds attribution into `context` prose and does not
 define a structured speaker field: when `type` is `dialogue`/`monologue`, the
 model already knows someone is speaking, and `context` carries who.
 Machine-readable identity can be reconstructed by tools from the canonical ID
@@ -174,7 +174,7 @@ content; MF1 remains accepted.
 
 ## 13. Why ICU lives inside strings
 
-Modern localization needs plurals, selects, and placeholders. CLIF does not
+Modern localization needs plurals, selects, and placeholders. CLIFF does not
 re-encode ICU as XML-like elements; it stores MF1/MF2 verbatim in quoted
 strings and validates brace balance. A broken ICU expression is a local
 string error, never document corruption, because `{` and `}` only appear
@@ -183,13 +183,13 @@ inside quoted strings.
 ## 14. Why `max-width` counts display cells
 
 `"OK"` and `"确定"` are both two characters but two vs. four rendered cells.
-UI overflow bugs are about rendered width, so CLIF measures UAX #11 display
+UI overflow bugs are about rendered width, so CLIFF measures UAX #11 display
 cells: Latin/digit/halfwidth = 1, CJK/fullwidth/emoji = 2, combining marks = 0.
 
 ## 15. Why comments are inert
 
 PO's fatal flaw is carrying structured data (`#:`, `#,`, `#|`, `#.`) inside
-comment syntax: a tool that strips comments destroys references. In CLIF, `#`
+comment syntax: a tool that strips comments destroys references. In CLIFF, `#`
 is only a full-line developer note; every translator-relevant fact is a field.
 A translator can be handed a file with all comments deleted and lose nothing.
 
@@ -210,7 +210,7 @@ A translator can be handed a file with all comments deleted and lose nothing.
 
 ## 17. How nested groups stay readable without closing tags
 
-A tree format pays for nesting with closing delimiters; CLIF pays with a
+A tree format pays for nesting with closing delimiters; CLIFF pays with a
 flatter look. The mitigation is a **Markdown-style outline**:
 
 - `[group]` is the heading; the dotted path shows the depth.
@@ -221,7 +221,7 @@ flatter look. The mitigation is a **Markdown-style outline**:
   path depth — a purely cosmetic cue, because the path on the line remains
   authoritative and the parser ignores the indentation:
 
-  ```clif
+  ```cliff
   [video]
   context: "Video settings."
 
@@ -236,6 +236,6 @@ flat and line-local.
 ## 18. Why the spec and tests are separate repositories
 
 Following TOML (spec vs `toml-test`) and WHATWG (standard vs test suites),
-the normative specification lives in `clif/` while the reference validator,
-fixtures, benchmarks, and quality rubrics live in `clif-test/`. The
+the normative specification lives in `cliff/` while the reference validator,
+fixtures, benchmarks, and quality rubrics live in `cliff-test/`. The
 specification says *what*; the test project says *how well*.

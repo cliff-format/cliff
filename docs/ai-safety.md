@@ -1,6 +1,6 @@
-# CLIF AI Safety Model
+# CLIFF AI Safety Model
 
-This document describes how CLIF 1.0 protects against the dominant LLM
+This document describes how CLIFF 1.0 protects against the dominant LLM
 editing failure modes and how to test it.
 
 ## 1. Failure modes of existing formats
@@ -15,7 +15,7 @@ editing failure modes and how to test it.
 | Free-form tag drift (`sad` vs `Sadness`) | n/a | n/a | n/a | n/a |
 | Whitespace changes meaning | n/a | n/a | n/a | possible |
 
-## 2. CLIF 1.0 guarantees
+## 2. CLIFF 1.0 guarantees
 
 For every structural construct, the following invariants hold:
 
@@ -41,7 +41,7 @@ For every structural construct, the following invariants hold:
 
 ## 3. Editing model
 
-CLIF assumes the worst-case editor: an autoregressive model that may replace
+CLIFF assumes the worst-case editor: an autoregressive model that may replace
 an arbitrary text span with a plausible alternative.
 
 | Edit | Result |
@@ -61,7 +61,7 @@ onward.
 
 ## 4. What the validator must report
 
-Every CLIF error MUST include:
+Every CLIFF error MUST include:
 
 - line number;
 - error category (`syntax`, `semantic`, `vocabulary`, `icu`, `id`,
@@ -74,7 +74,7 @@ This lets an AI agent make a single corrective edit instead of guessing.
 
 ## 5. Prompt-safe presentation
 
-When sending CLIF to a model:
+When sending CLIFF to a model:
 
 - delete comments (developer-only);
 - keep the header (it is the prompt's context);
@@ -83,12 +83,12 @@ When sending CLIF to a model:
   glossary entries relevant to the batch;
 - never pretty-print into another structure (do not wrap in JSON).
 
-CLIF is already the shape a model should edit: context lines first, then the
+CLIFF is already the shape a model should edit: context lines first, then the
 translation lines.
 
 ## 6. Robustness test protocol
 
-The edit-robustness suite in `clif-test` applies 100 real, model-style edits
+The edit-robustness suite in `cliff-test` applies 100 real, model-style edits
 to a baseline file and validates after every edit:
 
 - rename and reorder entries;
@@ -104,4 +104,4 @@ to a baseline file and validates after every edit:
 Acceptance: when the edit intent is valid, **100% of the edited files must
 remain valid**; deliberately invalid changes must each be caught by a precise
 error. The protocol lives in
-[clif-test/tests/edit-robustness/](https://github.com/clif-format/clif-test/tests/edit-robustness/).
+[cliff-test/tests/edit-robustness/](https://github.com/cliff-format/cliff-test/tests/edit-robustness/).

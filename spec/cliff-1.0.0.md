@@ -1,13 +1,13 @@
-# CLIF 1.0.0 — Contextual Localization Integrated Format
+# CLIFF 1.0.0 — Contextual Localization Integrated File Format
 
 - **Version:** 1.0.0
-- **File extension:** `.clif`
-- **Media type:** `text/vnd.clif` (provisional, unregistered)
+- **File extension:** `.cliff`
+- **Media type:** `text/vnd.cliff` (provisional, unregistered)
 - **Encoding:** UTF-8 (BOM optional), LF preferred, CRLF accepted
-- **Normative grammar:** [abnf/clif-1.0.abnf](abnf/clif-1.0.abnf)
+- **Normative grammar:** [abnf/cliff-1.0.abnf](abnf/cliff-1.0.abnf)
 - **License:** MIT
 
-> CLIF is the Contextual Localization Integrated Format. CLIF is not an
+> CLIFF is the Contextual Localization Integrated File Format. CLIFF is not an
 > interchange wrapper around other formats: it is the single lossless
 > **working format** for the whole localization lifecycle.
 
@@ -17,19 +17,19 @@ All text in this specification is normative unless otherwise labeled.
 
 ## 1. Introduction
 
-CLIF is a **line-oriented, context-first data format for translators**. One
+CLIFF is a **line-oriented, context-first data format for translators**. One
 file describes one translation family (`clan`): a coherent body of content
 such as all settings text of an application, one act of a game story, a film's
 subtitles, or one product catalog.
 
-A CLIF file carries enough context natively — situation, content type,
+A CLIFF file carries enough context natively — situation, content type,
 emotion, glossary dependencies, translation standards, and width limits — that
 a translator (human or LLM) never has to translate in the dark. It is designed
 to support **faithfulness, expressiveness, and elegance** ("信达雅", also called the three elements of translation)
 throughout the lifecycle: extraction, translation, review, and delivery all
 use the same lossless file.
 
-CLIF is designed for two consumers whose needs usually conflict:
+CLIFF is designed for two consumers whose needs usually conflict:
 
 1. **Human translators and localization engineers**, who need rigor,
    type-checkable metadata, fixed vocabularies, and interoperability with
@@ -45,7 +45,7 @@ which measurably improves LLM translation quality.
 
 ## 2. Goals and objectives
 
-CLIF exists to:
+CLIFF exists to:
 
 1. Provide **one lossless, self-contained file format** for the entire
    translation lifecycle — extraction, machine/human translation, review,
@@ -68,18 +68,18 @@ CLIF exists to:
 
 ### 2.1 Non-goals
 
-- CLIF is **not a runtime localization engine format**. It is an authoring,
+- CLIFF is **not a runtime localization engine format**. It is an authoring,
   working, and delivery format; runtimes should consume compiled resources.
-- CLIF does **not store translation memories, revision history, engine
+- CLIFF does **not store translation memories, revision history, engine
   confidence, dates, or authors**. Those are tool-chain/VCS data.
-- CLIF does **not define UI**. It defines data.
-- CLIF is **not a general serialization format** (unlike YAML/JSON). It has a
+- CLIFF does **not define UI**. It defines data.
+- CLIFF is **not a general serialization format** (unlike YAML/JSON). It has a
   fixed translation data model with a closed field vocabulary.
 
 ## 3. Quick example
 
-```clif
-CLIF 1.0
+```cliff
+CLIFF 1.0
 namespace: demo
 clan: settings
 source-language: en-US
@@ -87,7 +87,7 @@ target-language: zh-CN
 title: "Demo application settings"
 info: "End-user UI strings of the demo app; shown in the settings screen."
 standard: "Keep UI terms short; do not translate product names."
-dependency: ["../shared/terms.zh-CN.clif", "docs/style-guide.md"]
+dependency: ["../shared/terms.zh-CN.cliff", "docs/style-guide.md"]
 
 [video]
 context: "Video settings screen."
@@ -115,10 +115,10 @@ canonicalized by any serializer to the form above.
 
 ## 4. Conformance
 
-A conforming CLIF 1.0 document:
+A conforming CLIFF 1.0 document:
 
 1. Is a valid UTF-8 text stream.
-2. Matches the grammar in [abnf/clif-1.0.abnf](abnf/clif-1.0.abnf) after the
+2. Matches the grammar in [abnf/cliff-1.0.abnf](abnf/cliff-1.0.abnf) after the
    lexical pre-pass in §5.
 3. Satisfies every semantic constraint in §6–§14.
 
@@ -165,7 +165,7 @@ A bare CR is invalid.
 
 ### 5.4 Comments
 
-```clif
+```cliff
 # A full-line comment.
 # Leading whitespace is allowed.
 ```
@@ -196,7 +196,7 @@ A **string** is a single-line string delimited by either double quotes or
 single quotes. Both delimiters share identical semantics; the canonical
 serializer always emits double quotes:
 
-```clif
+```cliff
 "Resolution"
 "Anvil says: \"That is a fine blade.\""
 'Anvil says: "That is a fine blade."'
@@ -224,26 +224,26 @@ character. Unknown escape sequences are errors. Note that English apostrophes
 inside single-quoted strings.
 
 A **path string** (used by `dependency` and `reference`) is an ordinary quoted
-string holding a relative POSIX-style path such as `"../shared/terms.zh-CN.clif"`
+string holding a relative POSIX-style path such as `"../shared/terms.zh-CN.cliff"`
 or `"docs/style-guide.md"`. Forward slashes SHOULD be used; consumers MUST
 resolve paths safely (see §19).
 
 ## 6. Syntax
 
-A CLIF document contains, in order:
+A CLIFF document contains, in order:
 
 1. A mandatory version line.
 2. Header fields.
 3. Zero or more sections.
 
 ```abnf
-clif-file    = version-line *header-line *section
-version-line = *WSP %s"CLIF" SP %s"1.0" *WSP LF
+cliff-file    = version-line *header-line *section
+version-line = *WSP %s"CLIFF" SP %s"1.0" *WSP LF
 ```
 
-The version line MUST be the first non-blank, non-comment line. `CLIF` and
-`1.0` are case-sensitive; `clif 1.0` is invalid. The canonical spelling is
-exactly `CLIF 1.0`. Implementations MUST reject major versions they do not
+The version line MUST be the first non-blank, non-comment line. `CLIFF` and
+`1.0` are case-sensitive; `cliff 1.0` is invalid. The canonical spelling is
+exactly `CLIFF 1.0`. Implementations MUST reject major versions they do not
 support.
 
 ### 6.1 Fields
@@ -272,8 +272,8 @@ Rules:
   quoted strings — the continuation lines repeat neither the key nor the
   separator, and may be indented to align under the opening quote:
 
-  ```clif
-  info: "CLIF is a translator-optimized, context-first data format for"
+  ```cliff
+  info: "CLIFF is a translator-optimized, context-first data format for"
         "localization. It provides one lossless working file for the whole"
         "translation lifecycle — extraction, translation, review, delivery —"
         "and carries enough native context for faithful, expressive, elegant"
@@ -285,8 +285,8 @@ Rules:
   space at the end of a line, or a leading space at the start of the next,
   when the text needs one; CJK text typically needs none:
 
-  ```clif
-  info: "CLIF（Contextual Localization Integrated Format，读作“cliff”）是一种"
+  ```cliff
+  info: "CLIFF（Contextual Localization Integrated File Format，读作“cliff”）是一种"
         "面向翻译员优化的语境本地化数据格式。它为整个翻译生命周期（抽取、"
         "翻译、审校、交付）提供单一的无损工作文件格式，并原生提供充足语境"
   ```
@@ -300,8 +300,8 @@ Rules:
   again no repeated key, and may be indented to align under the opening
   bracket:
 
-  ```clif
-  dependency: ["../terms/terms.zh-CN.clif"]
+  ```cliff
+  dependency: ["../terms/terms.zh-CN.cliff"]
               ["docs/act3-script.md", "docs/style-guide.md"]
   ```
 
@@ -365,7 +365,7 @@ a validator rejects both:
 | `type: "label"` | `type: label` | tags are never quoted |
 | `status: "final"` | `status: final` | tags are never quoted |
 | `reference: "src/ui.cpp:12"` | `reference: ["src/ui.cpp:12"]` | `reference` is list-typed |
-| `dependency: "terms.zh-CN.clif"` | `dependency: ["terms.zh-CN.clif"]` | `dependency` is list-typed |
+| `dependency: "terms.zh-CN.cliff"` | `dependency: ["terms.zh-CN.cliff"]` | `dependency` is list-typed |
 
 The rule behind both rows is one sentence: **the shape of the value tells you
 its type, so the shape is not optional.** Brackets mean a list, quotes mean
@@ -392,7 +392,7 @@ group-path   = name *( "." name )
   nesting depth — two spaces per level, purely cosmetic — and the parser MUST
   ignore that indentation (the path itself remains authoritative):
 
-  ```clif
+  ```cliff
   [video]
   context: "Video settings."
 
@@ -430,7 +430,7 @@ entry-line = *WSP "<" name ">" *WSP LF
 
 - `<resolution>` starts a translation entry; the entry id is the unquoted
   lowercase kebab-case name inside the angle brackets. Angle brackets have
-  exactly one structural use in CLIF: this single-line entry marker. There
+  exactly one structural use in CLIFF: this single-line entry marker. There
   is no closing `</...>` tag, and `<`/`>` inside strings remain ordinary
   payload characters.
 - Entry lines MAY be re-indented by models; the marker itself is
@@ -454,7 +454,7 @@ Header fields appear after the version line and before the first section.
 | `clan` | name | **required** | no | Family segment; one file = one clan |
 | `source-language` | BCP 47 tag | **required** | no | Source language |
 | `target-language` | BCP 47 tag | **required** | no | Target language |
-| `version` | string | no | no | Project or source-content version the translations correspond to, e.g. `"1.4.2"`; not the CLIF spec version |
+| `version` | string | no | no | Project or source-content version the translations correspond to, e.g. `"1.4.2"`; not the CLIFF spec version |
 | `variant` | `standard` / `glossary` | no (default `standard`) | no | File variant; see §13 |
 | `title` | string | no | no | Short human-readable family description |
 | `info` | string | no | no | Family-level information; may continue across lines (§6.1) |
@@ -489,8 +489,8 @@ out of band MAY use `x-created` / `x-modified` extensions.
 
 Example:
 
-```clif
-CLIF 1.0
+```cliff
+CLIFF 1.0
 namespace: ironforge-rpg
 clan: game
 source-language: zh-CN
@@ -499,7 +499,7 @@ version: "1.4.2"
 title: "IronForge RPG — Act 3"
 info: "The mountain city of IronForge, one week after the siege." "Anvil is a warm, plain-spoken dwarf blacksmith. Captain Mei is formal in public, warm to friends."
 standard: "Preserve proper nouns; localize idioms for humor." "Keep UI labels under the declared max-width."
-dependency: ["../terms/ironforge.terms.en-US.clif", "docs/act3-script.md"]
+dependency: ["../terms/ironforge.terms.en-US.cliff", "docs/act3-script.md"]
 ```
 
 ## 8. Entry fields
@@ -530,10 +530,10 @@ Notes:
 - `emotion` is optional because its default is derived from `type`. Writing it
   explicitly is still encouraged for dialogue and idioms. When written, it is
   always a list — `emotion: [neutral]`, never `emotion: neutral` (§6.1).
-- **`speaker`, `listener`, and `scene` are not CLIF fields.** When `type` is
+- **`speaker`, `listener`, and `scene` are not CLIFF fields.** When `type` is
   `dialogue`/`monologue`, the translator already knows someone is speaking;
   *who* is speaking belongs in `context` (e.g. `context: "Anvil speaks to the
-  player at the forge."`). CLIF deliberately does not provide an optional
+  player at the forge."`). CLIFF deliberately does not provide an optional
   structured speaker field: an optional field would be ignored exactly as
   often as `context` is, while adding schema surface without adding
   guarantees.
@@ -552,7 +552,7 @@ For an entry `E` in section path `G`:
 - `max-width`: the entry value overrides the group value.
 - All other entry fields are never inherited.
 
-```clif
+```cliff
 [video]
 context: "Video settings screen."
 type: label
@@ -607,22 +607,22 @@ missing string at runtime.
 
 ### 10.3 Key vs ID
 
-| Concept | CLIF term | Meaning |
+| Concept | CLIFF term | Meaning |
 | --- | --- | --- |
 | Entry ID | `<id>` entry marker | The stable, human-readable identifier inside the file. It is part of the canonical ID and is the translation match key. |
 | Translation key | canonical ID | The globally unique key a tool uses to look up a unit across files, glossaries, and translation memories: `namespace.clan.group.entry`. |
-| Engine key | (mapping) | The string an engine or runtime resource uses at run time (a hash, a path, a numeric index). It is NOT stored in CLIF. |
+| Engine key | (mapping) | The string an engine or runtime resource uses at run time (a hash, a path, a numeric index). It is NOT stored in CLIFF. |
 
-CLIF deliberately has **no separate `key` field**: two identity systems in one
+CLIFF deliberately has **no separate `key` field**: two identity systems in one
 file would drift. If an engine cannot use the canonical ID directly, the
 converter owns the mapping and may emit it out of band (a `.map.json` or the
 engine's own resource format). A hash ID may be *globally unique*, but it is
-meaningless to a reviewer and brittle to regenerate; CLIF keeps meaningful
+meaningless to a reviewer and brittle to regenerate; CLIFF keeps meaningful
 IDs in the file and lets engines keep their hashes in their own resources.
 
 ### 10.4 Game-engine and app adaptation
 
-| Engine / pipeline | What it wants | CLIF adapter rule |
+| Engine / pipeline | What it wants | CLIFF adapter rule |
 | --- | --- | --- |
 | Minecraft / lang files | flat `key=value` | flatten canonical ID → `namespace.clan.group.entry` (or a configured prefix + `group.entry`); preserve the key on re-import so IDs stay stable |
 | Unreal (Localization Dashboard) | `namespace, key` inside culture folders | map canonical ID → UE `namespace`/`key` (e.g. namespace = `clan`, key = `group.entry`); `target-language` selects the culture folder |
@@ -635,16 +635,16 @@ re-extraction and re-import do not regenerate keys.
 
 ## 11. File layout and naming
 
-CLIF has two valid layouts. Both identify a file the same way; a validator
+CLIFF has two valid layouts. Both identify a file the same way; a validator
 MUST accept either.
 
 ### 11.1 Folder layout (canonical)
 
 ```
-<target-language>/<clan>.clif
+<target-language>/<clan>.cliff
 ```
 
-Examples: `zh-CN/settings.clif`, `en-US/act3.clif`, `ja-JP/terms.clif`.
+Examples: `zh-CN/settings.cliff`, `en-US/act3.cliff`, `ja-JP/terms.cliff`.
 
 This is the **canonical layout** for projects with more than one target
 language. It follows the Unreal Engine convention of one directory per
@@ -657,10 +657,10 @@ of hundreds of mixed files in one directory.
 ### 11.2 Flat layout (allowed for small projects)
 
 ```
-<clan>.<target-language>.clif
+<clan>.<target-language>.cliff
 ```
 
-Examples: `settings.zh-CN.clif`, `act3.en-US.clif`, `terms.zh-Hant-TW.clif`.
+Examples: `settings.zh-CN.cliff`, `act3.en-US.cliff`, `terms.zh-Hant-TW.cliff`.
 
 The flat layout is convenient for single-language repositories and small
 tools; it remains fully valid. A single-language project is never forced to
@@ -682,16 +682,16 @@ values.
      language tag whose primary subtag is 2–3 letters, optionally followed by
      `-` subtags of letters/digits (e.g. `en`, `ja-JP`, `zh-Hant-TW`), the
      directory MUST equal the header `target-language` (case-insensitive) and
-     the file name (minus `.clif`) MUST equal the header `clan`. Directory
+     the file name (minus `.cliff`) MUST equal the header `clan`. Directory
      names that merely look word-like (`valid`, `quality`) are not language
      tags.
   2. **File-name candidate:** otherwise, a file name matching
-     `<clan>.<target-language>.clif` MUST equal the header values.
+     `<clan>.<target-language>.cliff` MUST equal the header values.
   3. If both candidates exist, both MUST agree with the header and with each
      other.
   4. A file whose name and parent directory do not match either shape is
      still valid when the four required header fields are present (e.g. a
-     generated file such as `corpus.clif`); the layout check simply does not
+     generated file such as `corpus.cliff`); the layout check simply does not
      apply.
   5. Any mismatch is a validity error.
 - Editors and plugins SHOULD create files in the folder layout when a project
@@ -801,7 +801,7 @@ A translation-unit file. It MUST have at least one entry.
 A **terminology file**: canonical translations of dedicated terms, compound
 nouns, fixed phrases, and idioms (e.g. "The Block of Grass").
 
-A glossary is a normal CLIF document. It differs from a `standard` file in one
+A glossary is a normal CLIFF document. It differs from a `standard` file in one
 way only: **every entry is a term, not a segment of running text**. The grammar,
 the field vocabulary and the validation rules are identical.
 
@@ -820,11 +820,11 @@ the field vocabulary and the validation rules are identical.
   without its reason is re-litigated at every review.
 - The `clan` of a glossary SHOULD be the clan it serves with the suffix
   `-terms` (`settings` → `settings-terms`), so the file name follows §11
-  without a new convention: `settings-terms.zh-CN.clif`, or
-  `zh-CN/settings-terms.clif` in the folder layout. A glossary shared by a
+  without a new convention: `settings-terms.zh-CN.cliff`, or
+  `zh-CN/settings-terms.cliff` in the folder layout. A glossary shared by a
   whole project SHOULD use the clan `terms`.
 - Term files are referenced from `standard` files via `dependency`, e.g.
-  `dependency: ["../terms/terms.zh-CN.clif"]`.
+  `dependency: ["../terms/terms.zh-CN.cliff"]`.
 
 #### 13.2.2 Lifecycle: a glossary is produced, not only consumed
 
@@ -833,7 +833,7 @@ Most projects do not start with a glossary. Terminology decisions are made
 recurring interface word or a domain term has to be rendered — and they are
 lost unless they are written down at that moment.
 
-CLIF therefore treats the glossary as a **deliverable of translation**, not
+CLIFF therefore treats the glossary as a **deliverable of translation**, not
 merely as an input to it:
 
 1. A translator (human or machine) that makes a term decision while translating
@@ -867,14 +867,14 @@ merely as an input to it:
 
 Terminology consistency is the failure mode of every large localization
 project, and the usual remedies live outside the file: a spreadsheet, a
-translation-memory server, a reviewer's memory. Because a CLIF glossary is an
-ordinary CLIF document, it is validated by the same validator, diffed by the
+translation-memory server, a reviewer's memory. Because a CLIFF glossary is an
+ordinary CLIFF document, it is validated by the same validator, diffed by the
 same tools, reviewed in the same pull request, and attached by one
 `dependency` line. That is what makes "the glossary is part of the working
 file set" true in practice rather than in principle.
 
-```clif
-CLIF 1.0
+```cliff
+CLIFF 1.0
 namespace: studio
 clan: terms
 source-language: zh-CN
@@ -896,8 +896,8 @@ context: "Minecraft-style building block; the article must be preserved."
 
 ## 14. ICU MessageFormat support
 
-CLIF stores ICU MessageFormat syntax **verbatim** inside `source` and `target`
-strings. It is payload, never CLIF structure.
+CLIFF stores ICU MessageFormat syntax **verbatim** inside `source` and `target`
+strings. It is payload, never CLIFF structure.
 
 - MessageFormat 1: `{count, plural, ...}`, `{gender, select, ...}`.
 - MessageFormat 2: `.input`, `.local`, `.match`, and `{{...}}` placeholders.
@@ -948,11 +948,11 @@ MUST evaluate each variant with representative argument values.
 `dependency` is a single-line list of quoted **relative paths**, resolved
 against the directory containing the file:
 
-- prerequisite CLIF families — commonly `variant: glossary` term files;
-- non-CLIF reference material (markdown scripts, style guides, design docs).
+- prerequisite CLIFF families — commonly `variant: glossary` term files;
+- non-CLIFF reference material (markdown scripts, style guides, design docs).
 
-```clif
-dependency: ["../terms/terms.zh-CN.clif", "docs/act3-script.md"]
+```cliff
+dependency: ["../terms/terms.zh-CN.cliff", "docs/act3-script.md"]
 ```
 
 Paths use `/` separators. `..` is permitted. Consumers MUST treat paths as
@@ -963,7 +963,7 @@ or LLM given a file SHOULD also be given the referenced files.
 
 A canonical serializer MUST:
 
-1. Emit `CLIF 1.0` as the first line.
+1. Emit `CLIFF 1.0` as the first line.
 2. Emit the four required header fields `namespace`, `clan`,
    `source-language`, `target-language`, then `version` (when present),
    `variant` (only when `glossary`), `title`, `info`, `standard`,
@@ -976,16 +976,16 @@ A canonical serializer MUST:
 6. Use `key: value` with exactly one space after the colon; no trailing
    whitespace; single spaces inside lists.
 7. Use LF line endings, UTF-8 without BOM, and the minimum escaping necessary.
-8. Place the file at `<target-language>/<clan>.clif` when the project has
-   more than one target language; the flat name `<clan>.<target-language>.clif`
+8. Place the file at `<target-language>/<clan>.cliff` when the project has
+   more than one target language; the flat name `<clan>.<target-language>.cliff`
    is permitted for single-language projects (§11).
 
 ## 18. Interoperability
 
-CLIF is a working format; converters to/from other formats are expected but
+CLIFF is a working format; converters to/from other formats are expected but
 need not be lossless in the other direction.
 
-| CLIF 1.0 | XLIFF 2.1/2.2 | gettext PO | Fluent |
+| CLIFF 1.0 | XLIFF 2.1/2.2 | gettext PO | Fluent |
 | --- | --- | --- | --- |
 | file | `<xliff>` with one `<file>` | one `.po` file | one `.ftl` resource |
 | `namespace`/`clan` | project metadata + `<file original>` | header metadata | resource naming |
@@ -999,14 +999,14 @@ need not be lossless in the other direction.
 | glossary | XLIFF 2.2 glossary module (`variant: glossary`) | external glossary | term with attributes |
 | ICU in strings | inline payload | inline | Fluent select/placeholders |
 
-Converters from PO MUST materialize PO metadata comments into explicit CLIF
+Converters from PO MUST materialize PO metadata comments into explicit CLIFF
 fields (`reference`, `context`). Converters from XLIFF SHOULD preserve
 `<group>` nesting as dotted section paths and SHOULD map XLIFF 2.2 glossary
 modules to `variant: glossary` files.
 
 ## 19. Security considerations
 
-- CLIF documents may contain arbitrary strings; consumers MUST treat them as
+- CLIFF documents may contain arbitrary strings; consumers MUST treat them as
   untrusted data and MUST NOT evaluate them (except an explicitly requested
   ICU formatter).
 - Strings may contain literal `<` and `>`; UI layers must escape HTML as
@@ -1032,7 +1032,7 @@ only if it is generic and has a fixed vocabulary.
 ## 21. Versioning
 
 The version line declares the supported major version:
-`CLIF 1.0` identifies the 1.x series; this specification document is 1.0.0.
+`CLIFF 1.0` identifies the 1.x series; this specification document is 1.0.0.
 Implementations MUST reject major versions they do not support.
 
 ## Appendix A. Normative references

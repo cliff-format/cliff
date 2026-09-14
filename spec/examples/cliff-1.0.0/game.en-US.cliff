@@ -1,4 +1,4 @@
-CLIF 1.0
+CLIFF 1.0
 namespace: ironforge-rpg
 clan: game
 source-language: zh-CN
@@ -9,7 +9,7 @@ info: "The mountain city of IronForge, one week after the siege. "
       "Anvil is a warm, plain-spoken dwarf blacksmith. "
       "Captain Mei is formal in public, warm to friends."
 standard: "Preserve proper nouns; localize idioms for humor."
-dependency: ["../terms/terms.zh-CN.clif", "docs/act3-script.md"]
+dependency: ["../terms/terms.zh-CN.cliff", "docs/act3-script.md"]
 
 [items.shop]
 context: "Blacksmith shop, purchase confirmation popup."

@@ -1,4 +1,4 @@
-# CLIF Content-Type Tag Reference
+# CLIFF Content-Type Tag Reference
 
 `type` accepts only the following 26 tags. Tags are case-sensitive, lowercase,
 single-word or hyphenated standard American English. This closed vocabulary

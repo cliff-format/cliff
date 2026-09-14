@@ -1,4 +1,4 @@
-; CLIF 1.0 — Contextual Localization Integrated Format
+; CLIFF 1.0 — Contextual Localization Integrated File Format
 ; Normative ABNF grammar (RFC 5234; case-sensitive string literals per RFC 7405).
 ;
 ; LEXICAL NOTE
@@ -27,8 +27,8 @@
 ; US-ASCII-oriented; parsers apply the restrictions in spec §Lexical
 ; Structure.
 
-clif-file            = version-line *header-line *section
-version-line         = *WSP %s"CLIF" SP %s"1.0" *WSP LF
+cliff-file            = version-line *header-line *section
+version-line         = *WSP %s"CLIFF" SP %s"1.0" *WSP LF
 
 header-line          = field-line
 section              = section-line *group-metadata-line *entry
@@ -94,12 +94,12 @@ ALPHA                = %x41-5A / %x61-7A
 DIGIT                = %x30-39
 
 ; Semantic constraints (enforced by validators, not by ABNF):
-;  * version-line must be the first non-ignored line and must be "CLIF 1.0".
+;  * version-line must be the first non-ignored line and must be "CLIFF 1.0".
 ;  * Header fields occur before the first section-line; group metadata lines
 ;    occur only before the first entry-line of a section.
 ;  * namespace, clan, source-language, and target-language are all required.
-;    The layout (folder "<target-language>/<clan>.clif" or flat
-;    "<clan>.<target-language>.clif") is a delivery convention that MUST
+;    The layout (folder "<target-language>/<clan>.cliff" or flat
+;    "<clan>.<target-language>.cliff") is a delivery convention that MUST
 ;    agree with the header; it never supplies missing header values.
 ;  * Entry-level: source, type (direct or inherited), and status are
 ;    required; target is optional and required only for status translated /

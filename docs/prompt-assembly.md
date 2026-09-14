@@ -1,6 +1,6 @@
-# CLIF Prompt Assembly for AI Translation
+# CLIFF Prompt Assembly for AI Translation
 
-CLIF 1.0 is designed so a translation model can read the same file it will
+CLIFF 1.0 is designed so a translation model can read the same file it will
 edit. No intermediate JSON wrapping is needed. This document defines the
 recommended (non-normative) prompt assembly.
 
@@ -8,12 +8,12 @@ recommended (non-normative) prompt assembly.
 
 Send the model:
 
-1. the `CLIF 1.0` version line and the header;
+1. the `CLIFF 1.0` version line and the header;
 2. the current section header and its group metadata;
 3. the batch of entries to translate (each with its effective context);
 4. instruction lines built from the header `standard` fields;
 5. the referenced glossary entries relevant to the batch (from the files
-   listed in `dependency`), in CLIF `variant: glossary` form.
+   listed in `dependency`), in CLIFF `variant: glossary` form.
 
 Delete `#` comment lines. They are developer-only and may make the model
 treat them as translation input.
@@ -39,7 +39,7 @@ Translate the following localization file from <source-language> to
 <target-language>.
 
 Rules:
-- Keep the CLIF structure exactly: version line, header keys, group paths,
+- Keep the CLIFF structure exactly: version line, header keys, group paths,
   entry ids, field keys, and the order of entries.
 - Fill in target for each entry and set the correct status.
 - Preserve ICU MessageFormat syntax exactly (MF1 {...} and MF2 {{...}}).
@@ -49,7 +49,7 @@ Rules:
 - Translate with faithfulness, expressiveness, and elegance: keep wordplay
   and register; use natural <target-language> word order.
 
-<CLIF document here>
+<CLIFF document here>
 ```
 
 ## 4. Batch boundaries
@@ -69,8 +69,8 @@ The file failed validation. Fix only these lines:
 
 <validator output>
 
-<original or minimal surrounding CLIF lines>
+<original or minimal surrounding CLIFF lines>
 ```
 
-Do not ask the model to reformat the whole file; line-local repair is CLIF's
+Do not ask the model to reformat the whole file; line-local repair is CLIFF's
 failure-recovery model.

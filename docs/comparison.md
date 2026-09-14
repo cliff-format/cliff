@@ -1,8 +1,8 @@
-# CLIF vs. Common Translation Formats
+# CLIFF vs. Common Translation Formats
 
 ## Property table
 
-| Property | CLIF 1.0 | XLIFF 2.1/2.2 | GNU PO | JSON | CSV | Fluent | YAML | TOML |
+| Property | CLIFF 1.0 | XLIFF 2.1/2.2 | GNU PO | JSON | CSV | Fluent | YAML | TOML |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Structural nesting | flat, line-local | deep, paired tags | flat | deep, braces/brackets | flat | flat-ish (select blocks) | indentation | sections + arrays |
 | Closing delimiters at structure level | none (brackets close on one line) | `</...>` everywhere | none | `}`/`]` | none | `}` for select variants | none (indentation) | `]`, `}` |
@@ -24,7 +24,7 @@ For a 20-entry UI translation set carrying equivalent semantics:
 
 | Format | Structural tokens (approx.) | Notes |
 | --- | --- | --- |
-| CLIF 1.0 | 1× | keys only where information exists |
+| CLIFF 1.0 | 1× | keys only where information exists |
 | CSV (minimal, lossy) | 0.8–1× | loses context, nesting, lists |
 | CSV (context-preserving) | ~3× | repeats family/group context per row |
 | PO | 1.4–1.5× | comments-as-data plus msgid/msgstr duplication |
@@ -34,14 +34,14 @@ For a 20-entry UI translation set carrying equivalent semantics:
 | XLIFF 2.1/2.2 | 2.5–3× | open+close tag per element |
 
 Measured benchmark output is produced by the separate
-[clif-test](https://github.com/clif-format/clif-test) project
-(`clif-test/tools/token_benchmark.py`) and written to
-`clif-test/tests/benchmark/report.md`.
+[cliff-test](https://github.com/cliff-format/cliff-test) project
+(`cliff-test/tools/token_benchmark.py`) and written to
+`cliff-test/tests/benchmark/report.md`.
 
 ## Why not extend one of the existing formats?
 
 - **XLIFF** has the right data model (and 2.2 Part 2 adds the glossary
-  module), but its surface syntax is hostile to AI editing. CLIF borrows its
+  module), but its surface syntax is hostile to AI editing. CLIFF borrows its
   concepts (`file/group/unit`, `source/target`, `state`, glossary) and removes
   the paired-tag syntax.
 - **PO** is flat and cheap but encodes data in comments and uses source text
@@ -54,15 +54,15 @@ Measured benchmark output is produced by the separate
   message-focused rather than workflow-focused: no status model, no canonical
   project IDs, and its `select` is not ICU.
 - **YAML/TOML** are good general data languages, but neither defines a
-  translation data model; CLIF's fixed fields *are* the model.
+  translation data model; CLIFF's fixed fields *are* the model.
 
 ## Interoperability positioning
 
-CLIF is a **working hub**, not a runtime replacement:
+CLIFF is a **working hub**, not a runtime replacement:
 
 ```
-XLIFF 2.1/2.2 ⇄ CLIF 1.0 ⇄ PO / Fluent / JSON / CSV / XLSX (via tools)
+XLIFF 2.1/2.2 ⇄ CLIFF 1.0 ⇄ PO / Fluent / JSON / CSV / XLSX (via tools)
 ```
 
 Normative mappings are specified in
-[../spec/clif-1.0.0.md](../spec/clif-1.0.0.md) §18.
+[../spec/cliff-1.0.0.md](../spec/cliff-1.0.0.md) §18.

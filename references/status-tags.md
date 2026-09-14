@@ -1,7 +1,7 @@
-# CLIF Translation Status Reference
+# CLIFF Translation Status Reference
 
 `status` accepts exactly four tags: `initial`, `translated`, `reviewed`,
-`final`. In CLIF 1.0 `status` is **required on every entry**; there is no
+`final`. In CLIFF 1.0 `status` is **required on every entry**; there is no
 default, because an explicit state is the only safe state in a workflow file.
 
 ## State machine
@@ -29,7 +29,7 @@ initial ──translate──▶ translated ──review──▶ reviewed ─�
 
 ## Mapping to XLIFF 2.1/2.2
 
-| CLIF | XLIFF `state` | Note |
+| CLIFF | XLIFF `state` | Note |
 | --- | --- | --- |
 | `initial` | `initial` | No target text yet (extraction state) |
 | `translated` | `translated` | Target text exists |
@@ -37,6 +37,6 @@ initial ──translate──▶ translated ──review──▶ reviewed ─�
 | `final` | `final` | Locked |
 
 XLIFF's richer states (`needs-review-translation`,
-`needs-review-simplification`, `signed-off`) are tool-chain states. CLIF keeps
+`needs-review-simplification`, `signed-off`) are tool-chain states. CLIFF keeps
 the four states every translation workflow needs; tools may track finer states
 out of band.
