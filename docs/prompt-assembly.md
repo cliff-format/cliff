@@ -1,6 +1,6 @@
 # CLIFF Prompt Assembly for AI Translation
 
-CLIFF 1.0 is designed so a translation model can read the same file it will
+CLIFF 1.1 is designed so a translation model can read the same file it will
 edit. No intermediate JSON wrapping is needed. This document defines the
 recommended (non-normative) prompt assembly.
 
@@ -8,7 +8,7 @@ recommended (non-normative) prompt assembly.
 
 Send the model:
 
-1. the `CLIFF 1.0` version line and the header;
+1. the `CLIFF 1.1` version line and the header;
 2. the current section header and its group metadata;
 3. the batch of entries to translate (each with its effective context);
 4. instruction lines built from the header `standard` fields;
@@ -41,6 +41,9 @@ Translate the following localization file from <source-language> to
 Rules:
 - Keep the CLIFF structure exactly: version line, header keys, group paths,
   entry ids, field keys, and the order of entries.
+- Copy every identifier byte-for-byte. Do not recapitalize an entry id, do not
+  add or remove underscores, and do not "tidy" a group path: the id is the
+  match key, and a renamed id throws away the existing translation.
 - Fill in target for each entry and set the correct status.
 - Preserve ICU MessageFormat syntax exactly (MF1 {...} and MF2 {{...}}).
 - Follow the standard lines and the attached glossary entries.
@@ -74,3 +77,11 @@ The file failed validation. Fix only these lines:
 
 Do not ask the model to reformat the whole file; line-local repair is CLIFF's
 failure-recovery model.
+
+If the model output must be salvaged rather than sent back — a batch job, a
+long file, a model that cannot be re-prompted — parse it in tolerant mode
+(`cliff_format parse --tolerant`, or `validate --tolerant`) and feed the
+resulting repair report back as the corrective prompt. Appendix C of the
+specification defines exactly what tolerant parsing may and may not repair;
+it never guesses a missing field, a tag outside its vocabulary, or an
+unbalanced ICU expression, so a repair report is always safe to act on.

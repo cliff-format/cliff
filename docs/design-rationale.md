@@ -63,20 +63,84 @@ in".
   "multi-line" always means continuation, never duplicate keys. Text blocks
   are deliberately rejected.
 
-## 5. Why identifiers are lowercase kebab-case only
+## 5. Why identifiers have a character set but no style rule
 
-CLIFF restricts all names to lowercase kebab-case everywhere: keys, IDs, group
-segments, and fixed tags. Mixed case and snake case would create real problems:
+CLIFF 1.0 restricted all names to lowercase kebab-case everywhere: keys, IDs,
+group segments, and fixed tags. The reason was real:
 
 - LLMs drift between `InvSwordIron`, `inv_sword_iron`, and `inv-sword-iron`,
   silently breaking translation-memory keys.
 - Case-sensitive uniqueness checks then produce duplicate keys with identical
   meaning.
 
-One rule, zero choices: `[a-z][a-z0-9-]*`. Language tags remain BCP 47 and
-keep their own casing rules, because they are not names.
+CLIFF 1.1 keeps the concern and splits the answer.
 
-## 6. Why the canonical layout is `<target-language>/<clan>.cliff`
+**What the format decides** is the character set and the identity rules: a name
+may use ASCII letters, digits, `_`, and `-`, must contain at least one
+character, must not contain `.`, and is case-sensitive and **never rewritten by
+a parser**:
+
+```
+name-char = ALPHA / DIGIT / "_" / "-"
+```
+
+**What the project decides** is style: kebab-case, PascalCase, or the mixed
+habits an existing engine manifest already uses. `style/README.md` records the
+recommendation; nothing enforces it.
+
+Two things convinced us the 1.0 rule was backwards:
+
+1. **An identifier is a translation match key, not a display string.** It is
+   the string a translation memory, an engine manifest, or a downstream
+   resource already uses. When a project imports `Menu.Button.Save` from an
+   engine, or keeps a glossary called `TheBlockOfGrass`, enforcing CLIFF's
+   spelling means *rewriting the keys* — and a rewritten key is a lost
+   translation. The format was making a style decision on behalf of data that
+   already had one.
+2. **The drift problem is a recommendation's job.** Consistency is still worth
+   having within a file, and a style guide plus an opt-in lint (`--style`)
+   delivers it without turning a cosmetic choice into a parse error. A
+   validator that rejects `bad_id` cannot also be the validator for a project
+   whose ids came from Android resource names.
+
+What did **not** relax is equally deliberate. Fixed-vocabulary tags (`type`,
+`emotion`, `status`, `variant`) stay lowercase kebab-case words from closed
+sets. Those are not identifiers a project chooses; they are slots this
+specification defines, and a closed set that tolerates `Final` next to `final`
+is not closed (§12).
+
+`.`, however, stays forbidden inside a name even though it is a natural
+separator for dotted keys imported from i18n JSON. The dot is the separator of
+group paths and of canonical IDs, and a name that could contain one would make
+`namespace.clan.group.entry-id` ambiguous in both directions — the identity
+model is the one thing this format cannot make fuzzy. Importers fold a dotted
+key into a group path, or replace the dot; both are reported.
+
+Language tags remain BCP 47 and keep their own casing rules, because they are
+not names.
+
+## 5a. Why one optional trailing `,` or `;` is standard but not canonical
+
+Hand authors and models punctuate reflexively. In 1.0, one stray comma at the
+end of a line rejected the whole document, which is a bad trade: the comma
+carries no information, and the error costs a full validation round trip.
+
+1.1 therefore makes at most one trailing `,` or `;` legal on every line, with
+three deliberate boundaries:
+
+- **One, not many.** `;;`, `,,`, and `, ;` stay errors. Accepting a run would
+  make the boundary between a value and punctuation undecidable, and
+  "decidable" is the property the format is selling.
+- **Only after the closing quote or bracket.** The terminator is recognized
+  when the line's value has been consumed, so `source: "a,b;"` keeps its value
+  intact. A separator that can appear inside data and also terminate it is
+  exactly the kind of ambiguity §4 avoids.
+- **Never canonical.** The serializer does not emit it, so it cannot spread
+  through a file by copy-paste. Accepting input liberally while writing
+  canonically is the same posture as `key = value`. It is also why the style
+  guide tells writers not to use it: legal is not the same as recommended.
+
+## 6. Why the recommended layout is `<target-language>/<clan>.cliff`
 
 - A large project has many clans and many languages. Unreal Engine's
   convention — one folder per language — makes the **delivery boundary** the
@@ -86,12 +150,20 @@ keep their own casing rules, because they are not names.
   put hundreds of mixed files in one directory.
 - The flat name `<clan>.<target-language>.cliff` remains valid for
   single-language projects and small tools; the two layouts resolve to the
-  same two facts (clan, target language) and conflict is an error.
+  same two facts (clan, target language) and conflict is a warning.
 - The header is authoritative: `namespace`, `clan`, `source-language`, and
   `target-language` are all required, and authoring plugins/editors fill them
-  in automatically. The layout is a delivery convention that MUST agree with
+  in automatically. The layout is a delivery convention that SHOULD agree with
   the header; it never supplies missing header values. Files get renamed,
   moved, and pasted, so the header keeps the file self-describing.
+- **Why the mismatch is a warning and not an error (1.1).** The layout is a
+  convenience for humans and CI, not a property of the data. A file copied into
+  a working directory, attached to a ticket, or written by a generator has lost
+  its name without losing a single fact — the header still carries all four
+  identity fields. Reporting a mismatch as an error made the *file's location*
+  a conformance requirement, which is the one thing a self-describing format
+  should not need. A project that wants it enforced turns on an explicit strict
+  mode, so the choice is visible instead of implied.
 - `source-language` and `target-language` must be valid BCP 47 tags; a
   per-entry language exception belongs in that entry's `context`, not in the
   header.
@@ -239,3 +311,12 @@ Following TOML (spec vs `toml-test`) and WHATWG (standard vs test suites),
 the normative specification lives in `cliff/` while the reference validator,
 fixtures, benchmarks, and quality rubrics live in `cliff-test/`. The
 specification says *what*; the test project says *how well*.
+
+The style guide lives **inside** the specification repository (`style/`) even
+though it is informative. The split between normative and informative material
+is a labelling question, not a repository question: the two documents must
+agree about the character set, the canonical form, and the recommended shapes,
+and the drift-guard test in the reference implementation reads both. Putting
+them in one repository makes that agreement enforceable in one commit;
+splitting them would make the style guide the one document most likely to go
+stale without anyone noticing.

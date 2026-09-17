@@ -10,7 +10,8 @@
   <p align="center">The Contextual Localization Integrated File Format.</p>
 
   <p align="center">
-    <a href="spec/cliff-1.0.0.md">Specification</a> •
+    <a href="spec/cliff-1.1.0.md">Specification</a> •
+    <a href="style/">Style guide</a> •
     <a href="docs/">Documentation</a> •
     <a href="CONTRIBUTING.md">Contributing</a>
   </p>
@@ -28,23 +29,23 @@ All text in this specification is normative unless otherwise labeled.
 Here is a minimal CLIFF file:
 
 ```cliff
-CLIFF 1.0
+CLIFF 1.1
 namespace: demo
 clan: settings
 source-language: en-US
 target-language: zh-CN
 
-[video]
+[Video]
 type: label
 
-<resolution>
+<Resolution>
 source: "Resolution"
 target: "分辨率"
 type: noun
 status: final
 ```
 
-The four header fields `namespace`, `clan`, `source-language`, and `target-language` are required. Each entry has a stable ID, `source`, `type`, and `status`; group metadata is inherited by entries. See the [specification](spec/cliff-1.0.0.md) for the complete syntax.
+The four header fields `namespace`, `clan`, `source-language`, and `target-language` are required. Each entry has a stable ID, `source`, `type`, and `status`; group metadata is inherited by entries. Identifiers may use uppercase, digits, `_`, and `-`, are case-sensitive, and are never rewritten by a parser. See the [specification](spec/cliff-1.1.0.md) for the complete syntax.
 
 ## Why CLIFF?
 
@@ -55,7 +56,9 @@ CLIFF is built for the whole translation lifecycle and for LLM-driven translatio
 - **Enforced attributes**: Closed, validator-enforced vocabularies for `type`, `emotion`, and `status` turn vague inputs into typed data; `type` and `status` are required on every entry, and `emotion` defaults from `type`.
 - **Low token cost**: Short lowercase keys, minimal structural punctuation, no repeated open/close tags, and no per-entry braces make CLIFF cheaper to send to LLMs.
 - **Full ICU support**: Unicode MessageFormat MF1 and MF2 are preserved verbatim inside strings; the dialect is auto-detected.
-- **Human- and machine-friendly**: Markdown-like readability, tolerant `:` / `=` assignment, single-pass parser, and normative ABNF grammar.
+- **Human- and machine-friendly**: Markdown-like readability, tolerant `:` / `=` assignment, an optional trailing `,` / `;`, single-pass parser, and normative ABNF grammar.
+- **Your identifiers, your names**: 1.1 defines which characters an identifier may use and stops there — casing, word joining, and file naming are a project style decision ([style guide](style/README.md)), not a conformance requirement.
+- **Strict and tolerant parsing**: a strict parser rejects everything the grammar rejects, while a documented tolerant mode ([Appendix C](spec/cliff-1.1.0.md)) repairs the format errors a model actually makes — without ever guessing missing data — and reports every repair.
 
 See the [comparison](docs/comparison.md) and [design rationale](docs/design-rationale.md) for full details.
 
@@ -100,8 +103,10 @@ The CLIFF logo is Copyright © 2026 CLIFF contributors and is also licensed unde
 
 This README is only a starting point. The normative details and extended design material live in the repository:
 
-- [Specification](spec/cliff-1.0.0.md) — the complete normative definition of CLIFF 1.0.
-- [ABNF grammar](spec/abnf/cliff-1.0.abnf) — the machine-readable normative grammar.
+- [Specification](spec/cliff-1.1.0.md) — the complete normative definition of CLIFF 1.1.
+- [CLIFF 1.0](spec/cliff-1.0.0.md) — the superseded but still true 1.0 definition; every 1.0 document is a valid 1.1 document.
+- [ABNF grammar](spec/abnf/cliff-1.1.abnf) — the machine-readable normative grammar.
+- [Style guide](style/README.md) — recommended identifier and file naming (informative, not enforced).
 - [Design rationale](docs/design-rationale.md) — why the syntax is designed this way.
 - [AI safety](docs/ai-safety.md) — how CLIFF stays safe under LLM editing.
 - [Prompt assembly](docs/prompt-assembly.md) — recommended prompting pattern for translation models.

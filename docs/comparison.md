@@ -2,7 +2,7 @@
 
 ## Property table
 
-| Property | CLIFF 1.0 | XLIFF 2.1/2.2 | GNU PO | JSON | CSV | Fluent | YAML | TOML |
+| Property | CLIFF 1.1 | XLIFF 2.1/2.2 | GNU PO | JSON | CSV | Fluent | YAML | TOML |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Structural nesting | flat, line-local | deep, paired tags | flat | deep, braces/brackets | flat | flat-ish (select blocks) | indentation | sections + arrays |
 | Closing delimiters at structure level | none (brackets close on one line) | `</...>` everywhere | none | `}`/`]` | none | `}` for select variants | none (indentation) | `]`, `}` |
@@ -24,7 +24,7 @@ For a 20-entry UI translation set carrying equivalent semantics:
 
 | Format | Structural tokens (approx.) | Notes |
 | --- | --- | --- |
-| CLIFF 1.0 | 1× | keys only where information exists |
+| CLIFF 1.1 | 1× | keys only where information exists |
 | CSV (minimal, lossy) | 0.8–1× | loses context, nesting, lists |
 | CSV (context-preserving) | ~3× | repeats family/group context per row |
 | PO | 1.4–1.5× | comments-as-data plus msgid/msgstr duplication |
@@ -61,8 +61,8 @@ Measured benchmark output is produced by the separate
 CLIFF is a **working hub**, not a runtime replacement:
 
 ```
-XLIFF 2.1/2.2 ⇄ CLIFF 1.0 ⇄ PO / Fluent / JSON / CSV / XLSX (via tools)
+XLIFF 2.1/2.2 ⇄ CLIFF 1.1 ⇄ PO / Fluent / JSON / CSV / XLSX (via tools)
 ```
 
 Normative mappings are specified in
-[../spec/cliff-1.0.0.md](../spec/cliff-1.0.0.md) §18.
+[../spec/cliff-1.1.0.md](../spec/cliff-1.1.0.md) §18.

@@ -5,6 +5,9 @@
 - **Media type:** `text/vnd.cliff` (provisional, unregistered)
 - **Encoding:** UTF-8 (BOM optional), LF preferred, CRLF accepted
 - **Normative grammar:** [abnf/cliff-1.0.abnf](abnf/cliff-1.0.abnf)
+- **Status:** superseded by [cliff-1.1.0.md](cliff-1.1.0.md); this document is kept as the
+  frozen 1.0 definition. CLIFF 1.1 is a pure relaxation of 1.0, so every document that
+  conforms to this specification is also a conforming CLIFF 1.1 document.
 - **License:** MIT
 
 > CLIFF is the Contextual Localization Integrated File Format. CLIFF is not an
