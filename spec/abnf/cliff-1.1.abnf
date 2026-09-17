@@ -1,0 +1,188 @@
+; CLIFF 1.1 — Contextual Localization Integrated File Format
+; Normative ABNF grammar (RFC 5234; case-sensitive string literals per RFC 7405).
+;
+; Changes from CLIFF 1.0:
+;   * "name" is relaxed to the character set A-Z a-z 0-9 "_" "-" (no dot).
+;   * "tag-name" is introduced: fixed-vocabulary tags stay lowercase kebab-case.
+;   * An optional single trailing "," or ";" terminator is accepted on every
+;     line (see "terminator" below and spec 5.6).
+; Every CLIFF 1.0 document remains a valid CLIFF 1.1 document: the change is a
+; pure relaxation, and no production was removed or narrowed.
+;
+; LEXICAL NOTE
+; ------------
+; The grammar below operates after a lexical pre-pass that:
+;   * decodes UTF-8 (an optional leading U+FEFF BOM is removed),
+;   * normalizes CRLF to LF (a bare CR is invalid),
+;   * appends a final LF when the stream does not end with one, so that every
+;     line production below is LF-terminated,
+;   * removes a single optional trailing terminator ("," / ";" then optional
+;     SP / HTAB) from the end of a line. The terminator is recognized only
+;     after the line's closing quote or bracket has been consumed, so a comma
+;     or semicolon inside a quoted string is payload, never a terminator. More
+;     than one terminator is a syntax error,
+;   * removes blank lines (lines containing only SP / HTAB),
+;   * removes comment lines (optional SP / HTAB followed by "#").
+; Comments, blank lines, and terminators may therefore appear between any two
+; grammar productions, but never inside a quoted string. Their removal is
+; transparent everywhere except one place: a blank or comment line terminates
+; the continuation of the preceding field, so a parser MUST record that
+; boundary before discarding the line (see the semantic constraints below).
+; Terminator removal is transparent everywhere and MUST NOT be reported as a
+; repair by any parser.
+;
+; This is the TOLERANT grammar: surrounding whitespace, both ":" and "=", and a
+; single trailing terminator are accepted so the format is pleasant to read and
+; type by hand. The CANONICAL form is fixed in spec §Serialization: "key:
+; value" with exactly one space after the colon, section and entry lines at
+; column 0 with no trailing whitespace, and no terminator.
+;
+; All non-ASCII Unicode scalar values are permitted in strings and comments.
+; They are not enumerated here because RFC 5234 char-val ranges are
+; US-ASCII-oriented; parsers apply the restrictions in spec §Lexical
+; Structure.
+
+cliff-file            = version-line *header-line *section
+version-line         = *WSP %s"CLIFF" SP ( %s"1.0" / %s"1.1" ) *WSP [ terminator ] *WSP LF
+                      ; both "CLIFF 1.0" and "CLIFF 1.1" are accepted by a 1.1
+                      ; implementation; the canonical spelling is "CLIFF 1.1".
+                      ; A minor version other than 1.0 / 1.1 (and any other
+                      ; major version) MUST be rejected with the supported
+                      ; versions named in the diagnostic.
+
+header-line          = field-line
+section              = section-line *group-metadata-line *entry
+
+section-line         = *WSP "[" group-path "]" *WSP [ terminator ] *WSP LF
+group-path           = name *( "." name )
+                      ; "." separates path segments, which is why a name MUST
+                      ; NOT contain "." (spec 5.5).
+
+group-metadata-line  = field-line
+entry                = entry-line *field-line
+entry-line           = *WSP "<" name ">" *WSP [ terminator ] *WSP LF
+                      ; single-line marker; no closing tag exists, and < > in
+                      ; strings remain ordinary payload characters. The entry
+                      ; id is a name: uppercase, digits, "_" and "-" are
+                      ; permitted and case is significant.
+
+field-line           = *WSP field *WSP [ terminator ] *WSP LF *continuation-line
+continuation-line    = *WSP ( string-value / list ) *WSP [ terminator ] *WSP LF
+                      ; attaches to the immediately preceding field: string
+                      ; fragments only after scalar string fields, list
+                      ; fragments only after list fields.
+field                = key *WSP ( "=" / ":" ) *WSP value
+value                = string-value / list / integer / name / language-tag
+string-value         = string *( *WSP string )
+                      ; adjacent strings concatenate verbatim (C rules) and
+                      ; are allowed on any scalar string field.
+list                 = "[" *WSP [ list-items ] *WSP "]"
+list-items           = list-item *( *WSP "," *WSP list-item ) *WSP [ "," ]
+list-item            = string / integer / name / language-tag
+                      ; a list is single-line and never nests another list.
+
+key                  = name
+
+; Names: the relaxed CLIFF 1.1 identifier used for keys, entry ids, group path
+; segments, and the namespace / clan header values. The character set is
+; exactly ASCII letters, digits, underscore, and hyphen. Uppercase and
+; lowercase are both permitted and are case-sensitive; a leading digit,
+; hyphen, or underscore is permitted; "." is forbidden because it separates
+; group path segments and canonical ID components. Identifiers MUST NOT be
+; case-folded or otherwise rewritten by a parser (spec 5.5, 10.1).
+name                 = name-char *name-char
+name-char            = ALPHA / DIGIT / "_" / "-"
+
+; Tags: the values of the fixed-vocabulary fields type, emotion, status, and
+; variant. Tags are NOT relaxed by 1.1: they stay lowercase kebab-case, and
+; each is drawn from a closed set (spec 12, 13). A differently-cased spelling
+; of a listed value is a vocabulary error, not an alias.
+tag-name             = %x61-7A *( %x61-7A / DIGIT / "-" )
+
+; A single optional line terminator, accepted on every line kind and never
+; meaningful (spec 5.6). It is recognized only after the line's closing quote
+; or bracket; more than one is a syntax error. A canonical serializer MUST NOT
+; emit it.
+terminator           = "," / ";"
+
+integer              = 1*DIGIT
+
+; BCP 47 language tag. The full BCP 47 grammar is defined by RFC 5646 and is
+; normative; this production is a permissive envelope for ABNF completeness.
+; Comparison is case-insensitive per BCP 47.
+language-tag         = ALPHA *( ALPHA / DIGIT / "-" )
+
+string               = double-string / single-string
+double-string        = DQUOTE *( double-char / double-escape ) DQUOTE
+double-char          = %x20-21 / %x23-5B / %x5D-7E / non-ascii
+                      ; excludes DQUOTE (%x22), backslash (%x5C), controls.
+                      ; "," (%x2C) and ";" (%x3B) are ordinary payload here.
+double-escape        = "\" ( DQUOTE / "\" / "n" / "r" / "t" )
+single-string        = SQUOTE *( single-char / single-escape ) SQUOTE
+single-char          = %x20-26 / %x28-5B / %x5D-7E / non-ascii
+                      ; excludes SQUOTE (%x27), backslash (%x5C), controls.
+single-escape        = "\" ( SQUOTE / "\" / "n" / "r" / "t" )
+non-ascii            = %x80-F4
+                      ; practical envelope; parsers MUST validate UTF-8
+                      ; scalar values per the specification.
+
+WSP                  = SP / HTAB
+SP                   = %x20
+HTAB                 = %x09
+DQUOTE               = %x22
+SQUOTE               = %x27
+LF                   = %x0A
+ALPHA                = %x41-5A / %x61-7A
+DIGIT                = %x30-39
+
+; Semantic constraints (enforced by validators, not by ABNF):
+;  * version-line must be the first non-ignored line and must declare 1.0 or
+;    1.1; any other version is rejected with the supported versions named.
+;  * Header fields occur before the first section-line; group metadata lines
+;    occur only before the first entry-line of a section.
+;  * namespace, clan, source-language, and target-language are all required.
+;    A layout (folder "<target-language>/<clan>.cliff" or flat
+;    "<clan>.<target-language>.cliff") that disagrees with the header is a
+;    WARNING by default in 1.1 (spec 11.3); an implementation MAY offer an
+;    explicit opt-in mode that reports it as an error.
+;  * Entry-level: source, type (direct or inherited), and status are
+;    required; target is optional and required only for status translated /
+;    reviewed / final (status initial allows a missing target).
+;  * Section paths and entry ids are unique; duplicate entry ids are a hard
+;    error (never last-wins). Canonical IDs
+;    namespace.clan.group-path.entry-id are unique. Case is significant, so
+;    "Save" and "save" are two different ids.
+;  * Names are used verbatim: no case folding and no kebab-case rewriting of
+;    identifiers by a parser (spec 5.5, 10.1). Identifier *style* is a
+;    recommendation (style/README.md), never a validity rule.
+;  * Fixed tag vocabularies: type, emotion, status, variant. Tag values are
+;    tag-name (lowercase kebab-case). Status tags are initial, translated,
+;    reviewed, final (XLIFF 2.x state model).
+;  * A field separator is the first "=" or ":" outside a quoted string; the
+;    entry anchor is the single-line marker "<id>". "<" and ">" have no other
+;    structural use and never pair across lines.
+;  * A line terminator ("," / ";") is recognized only after the value's
+;    closing quote or bracket, is never significant, and is never emitted by a
+;    canonical serializer. At most one is permitted per line; a run of them
+;    (";;", ",,", ", ;") is a syntax error. A ";" or "," inside a quoted string
+;    is payload, and the optional trailing comma inside a list is the list's
+;    own production, not a terminator.
+;  * Every key appears at most once per scope (header, group, entry);
+;    duplicate keys are validity errors — there are no repeatable fields.
+;  * Strings containing braces must have balanced braces; the check applies
+;    to the fully concatenated value after continuation lines are joined.
+;  * List-typed fields (emotion, dependency, reference) are always written
+;    as a list, even for a single item; a bare scalar in a list-typed field
+;    is a validity error. dependency and reference list items are quoted
+;    path/string values.
+;  * Continuation lines (string fragments after scalar string fields, bare
+;    lists after list fields) concatenate verbatim / extend the list in
+;    order. A blank or comment line ends a continuation; an orphan
+;    continuation line is a syntax error. Lists themselves never span lines
+;    and list items never continue across lines.
+;  * Implementations MUST enforce documented, configurable resource limits in
+;    both strict and tolerant modes (spec 19): file size, line length, decoded
+;    string length, group path segment count, list length, and entry count.
+;  * Tolerant parsing (spec Appendix C) is opt-in, is a superset of this
+;    grammar, MUST report every repair, and MUST NOT guess the items listed in
+;    Appendix C.5. Its output MUST be valid under this grammar.
