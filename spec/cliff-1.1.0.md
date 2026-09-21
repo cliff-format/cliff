@@ -429,6 +429,13 @@ Rules:
   a bare lowercase word (`status: final`, `type: noun`, `emotion: [calm]`).
   Quoting one turns it into a string and is a validity error. Only text values
   are quoted. (A tolerant parser MAY accept a quoted tag — Appendix C.2.3.)
+- **Keys are never quoted.** A key is a bare name (`source:`, `status:`,
+  `x-engine:`; `key = name` in the grammar). Wrapping one in quotes is a validity
+  error: a key is a name and never a string, so a reader never has to decide
+  whether a leading quote opens a key or continues the preceding value. A writer
+  never needs the quoted form either, because no key contains a character that
+  quoting would protect. (A tolerant parser MAY accept a quoted key — Appendix
+  C.2.7 — in which case it MUST report the repair.)
 - **No repeated fields.** Every key MAY appear at most once per scope
   (header, group, entry). Duplicates are validity errors. There is no
   "repeatable field" concept; multi-value data is expressed with lists or
@@ -1260,7 +1267,7 @@ advertises tolerant parsing, so that two independent tolerant parsers agree.
 
 ### C.2 Permitted relaxations
 
-A tolerant parser MAY accept the following six deviations. For each, the
+A tolerant parser MAY accept the following seven deviations. For each, the
 required result and the required diagnostic are given.
 
 1. **A list-typed field written as a bare scalar.**
@@ -1309,6 +1316,27 @@ required result and the required diagnostic are given.
    Result: the document is read as the corresponding minor version. The
    version number is not guessed from content.
    Diagnostic: category `version`.
+
+7. **A quoted key.**
+   Trigger: `"context": "…"`, `'status': final`, `"source" = "Sign in"`.
+   Result: the quotes are removed and the enclosed text is read as the key,
+   under exactly the scope rules a bare key faces. The enclosed text MUST be a
+   `name` (§5.5): escape sequences are not processed, and a character outside
+   `name-char` is not accepted. **The key sets are unchanged.** A quoted word
+   that is not a legal key in that scope is an unknown key and therefore an
+   error (§C.5); the quotes never make an unknown key legal, and never move a
+   key into a scope that does not allow it.
+   Diagnostic: category `name-quote`, with the line and both spellings.
+
+Relaxation 7 is decided before the continuation rules of §6.1: a line whose
+first non-whitespace token is a quoted name followed, after optional whitespace,
+by `:` or `=`, is a field line. A line that instead consists only of quoted
+strings is still a continuation line. The relaxation applies to header, group
+metadata and entry fields; the version line, section lines and entry lines carry
+no key and are unaffected. The repair's result is identical to the bare key, so
+the canonical form of §Serialization and the rule of §6.1 are unchanged: a
+serializer emits keys bare, and the quoted form exists only as an input
+relaxation.
 
 Relaxations deliberately **not** in this list: trailing `,` / `;` (that is
 standard syntax since 1.1, §5.6, and MUST NOT be reported as a repair), bare

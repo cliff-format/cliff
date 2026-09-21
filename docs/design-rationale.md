@@ -140,6 +140,57 @@ three deliberate boundaries:
   canonically is the same posture as `key = value`. It is also why the style
   guide tells writers not to use it: legal is not the same as recommended.
 
+## 5b. Why a key is never quoted, and why tolerant parsing accepts one
+
+A key is a name, and a name carries no payload that quoting could protect: no
+legal key contains a space, a colon, a quote, or any other character a writer
+would need to escape. There is therefore nothing a quoted key could express that
+a bare one cannot, which is the first reason to keep the quotes out of the
+grammar (§6.1).
+
+The second reason is where the line starts. A line whose first token is a quoted
+string is already meaningful in CLIFF: it is a continuation of the preceding
+string field (§6.1). If `"source":` were valid, the parser would have to decide
+whether a leading `"` opens a key or continues a value, and a wrapped value line
+like `"…" "…"` would sit one colon away from a field. The format's core promise is
+that a line's shape tells you what it is, so the first token keeps exactly one
+meaning.
+
+Tolerant parsing accepts it anyway, as Appendix C.2.7, because the deviation is
+pure shape: removing the quotes around `"context"` yields `context` byte for
+byte, with no inference about what the author meant. That is the same operation
+C.2.3 already performs on a quoted tag and C.2.4 on a quoted entry id, and it is
+the class of error a translation pipeline actually receives — quoting a key is a
+reflex, and the repair costs nothing to decide.
+
+Three boundaries keep the relaxation from widening anything:
+
+- **The key sets are untouched.** The unquoted text is checked against the legal
+  keys of the scope the line sits in, so `"context"` in a group is still a
+  scope error and `"translater"` is still an unknown key (§C.5). The repair can
+  remove quotes; it can never legalize a word.
+- **The enclosed text must be a name.** Escapes are not processed and no
+  character outside `name-char` is accepted, so the tolerant parser is never
+  asked to guess where a quoted key ends.
+- **The strict rule is normative, not a style recommendation.** §6.1 makes a
+  quoted key a validity error, which a validator reports as an error; §5a is the
+  opposite case, where the trailing terminator is legal input that only the style
+  guide discourages. Key quoting therefore has nothing to say to
+  `style/README.md`, exactly as identifier casing — which *is* a project style
+  decision (§5) — has no bearing on whether a document conforms. Canonical
+  serialization is unchanged and normatively so: a serializer emits keys bare, so
+  the relaxed form cannot spread by copy-paste.
+
+Two neighbouring designs were rejected. Making a quoted key *valid* rather than
+tolerated would put two spellings of every line into the grammar and reintroduce
+the leading-quote ambiguity for every strict parser, which is the cost CLIFF
+refuses to pay elsewhere. Treating it as identifier normalization (C.2.5) would be
+worse than useless: normalization rewrites characters outside `name-char`, but a
+key is not an arbitrary identifier — a word that is not in the closed key set is
+an unknown key, and normalizing it would launder a typo into a valid-looking
+field. The relaxation therefore reports `name-quote` and then applies the
+ordinary key rules unchanged.
+
 ## 6. Why the recommended layout is `<target-language>/<clan>.cliff`
 
 - A large project has many clans and many languages. Unreal Engine's

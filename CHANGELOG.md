@@ -26,6 +26,20 @@ exists (§21).
 
 ### Added
 
+- **Relaxation: a quoted key** (Appendix C.2.7, §6.1). A field line written
+  `"context": "…"` — or with single quotes, or with `=` — is now a permitted
+  tolerant deviation: the quotes are removed, a `name-quote` repair is reported,
+  and the enclosed text is then read as a key under exactly the scope rules a
+  bare key faces. **Nothing is widened.** The key sets are unchanged, so a quoted
+  word that is not a legal key in that scope is still an unknown-key error
+  (§C.5) and a quoted `status` in a group is still a scope error; the enclosed
+  text must be a `name` (§5.5), with no escapes processed, so a parser is never
+  asked to guess where the key ends. The relaxation is decided before the
+  continuation rules: a line whose first token is a quoted name followed by `:`
+  or `=` is a field line, while a line of quoted strings only remains a
+  continuation. A serializer still emits keys bare (§Serialization, §6.1), so the
+  relaxed form cannot spread. The rationale, including the two neighbouring
+  designs that were rejected, is in `docs/design-rationale.md` §5b.
 - **Optional line terminator** (`, ` or `;`) at the end of any line, at most one,
   meaning nothing and never emitted by a canonical serializer. It is recognized
   only after the line's closing quote or bracket, so a `,` or `;` inside a string
@@ -34,7 +48,7 @@ exists (§21).
   naming, with the machine-readable recommended shapes and the reasons the rules
   moved out of the normative grammar.
 - **Appendix C — tolerant parsing**, normative for any tool that advertises it:
-  the six permitted relaxations, the deterministic identifier-normalization
+  the seven permitted relaxations, the deterministic identifier-normalization
   algorithm, collision handling, the repairs that are forbidden (a tolerant
   parser must not guess missing data, vocabulary, or structure), and the
   requirement that every repair be reported and that the result still be valid
@@ -45,6 +59,12 @@ exists (§21).
 
 ### Compatibility
 
+- **A strict implementation reports nothing differently for a quoted key.** Strict
+  mode still rejects it, with the same rejection as before; only a tool that
+  advertises tolerant parsing accepts it, and it must report the repair. A
+  tolerant parser built before this change refuses the form, so a document that
+  relies on it is not portable to an older tolerant implementation — the form is
+  input only, and canonical output is unchanged.
 - Both `CLIFF 1.0` and `CLIFF 1.1` version lines are accepted by a 1.1
   implementation; a canonical serializer emits `CLIFF 1.1` for new documents and
   preserves the declared version when round-tripping an existing one.

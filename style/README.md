@@ -65,6 +65,12 @@ the format" — only the specification can say that.
 - **Tag spellings.** `type`, `emotion`, `status`, and `variant` are closed
   vocabularies with fixed spelling ([specification §12](../spec/cliff-1.1.0.md)).
   There is no style question here, which is why §3 is short.
+- **Whether a key may be quoted.** The specification forbids it: a key is a bare
+  name, and quoting one is a validity error ([specification
+  §6.1](../spec/cliff-1.1.0.md)). A tolerant parser may accept a quoted key as the
+  documented relaxation of [Appendix C.2.7](../spec/cliff-1.1.0.md) and report the
+  repair, which is a conformance option rather than a recommendation, so this
+  guide says nothing about it either way.
 - **Field order within an entry**, beyond the recommendation in §6.3.
 - **Anything about a document's meaning.** Translation choices are the project's, not
   this guide's.

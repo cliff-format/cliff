@@ -10,7 +10,7 @@ a PR adding it here with a link and the conformance row it passed.
 | --- | --- |
 | **Validator** | Parses the ABNF grammar and enforces every semantic constraint of the specification; reports line-numbered, categorized errors. |
 | **Parser** | Tolerant parser: accepts valid documents and ignores unknown `x-` fields with warnings. |
-| **Tolerant parser** | Additionally implements the opt-in tolerant mode of the specification's Appendix C: the six permitted relaxations, deterministic identifier normalization, documented collision handling, and a report for every repair. |
+| **Tolerant parser** | Additionally implements the opt-in tolerant mode of the specification's Appendix C: the seven permitted relaxations, deterministic identifier normalization, documented collision handling, and a report for every repair. |
 | **Serializer** | Produces canonical CLIFF 1.1 (§17 Serialization), including the file name convention. |
 | **Style checker** | Reports deviations from `style/README.md` as warnings; it MUST NOT report a style deviation as an error. |
 | **Converter** | Bidirectional mapping to another format (XLIFF, PO, Fluent, JSON, CSV), documented lossy conversions. |
