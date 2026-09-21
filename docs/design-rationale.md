@@ -142,22 +142,31 @@ three deliberate boundaries:
 
 ## 5b. Why a key is never quoted, and why tolerant parsing accepts one
 
-A key is a name, and a name carries no payload that quoting could protect: no
-legal key contains a space, a colon, a quote, or any other character a writer
-would need to escape. There is therefore nothing a quoted key could express that
-a bare one cannot, which is the first reason to keep the quotes out of the
-grammar (§6.1).
+The grammar settles the first half without a rule of its own: `key = name`
+(§5.5), and a `name` is `[A-Za-z0-9_-]+`, so `"status": final` is not a field line
+at all. A `name` also carries no payload that quoting could protect — no legal key
+contains a space, a colon, a quote, or anything else a writer would escape — so
+there is nothing a quoted key could express that a bare one cannot.
 
-The second reason is where the line starts. A line whose first token is a quoted
-string is already meaningful in CLIFF: it is a continuation of the preceding
-string field (§6.1). If `"source":` were valid, the parser would have to decide
-whether a leading `"` opens a key or continues a value, and a wrapped value line
-like `"…" "…"` would sit one colon away from a field. The format's core promise is
-that a line's shape tells you what it is, so the first token keeps exactly one
-meaning.
+**That is why §6.1 states no rule about it.** The section does have to state that
+tags are never quoted (C.2.3) and that list-typed fields are always written as
+lists (C.2.1), and the reason is the opposite one: `"final"` *is* a well-formed
+`value` and `objective` *is* a well-formed `name`, so without a sentence saying
+otherwise both lines read as legal. A quoted key has no such reading, and every
+clause lives where the grammar leaves a gap. Adding a symmetric bullet for keys
+would state a rule the grammar already enforces and imply that the two cases are
+alike when the whole point is that they are not.
 
-Tolerant parsing accepts it anyway, as Appendix C.2.7, because the deviation is
-pure shape: removing the quotes around `"context"` yields `context` byte for
+There is a second reason the quotes stay out, and it is about where the line
+starts. A line whose first token is a quoted string is already meaningful in
+CLIFF: it is a continuation of the preceding string field (§6.1). If `"source":`
+were well formed, a parser would have to decide whether a leading `"` opens a key
+or continues a value, and a wrapped value line like `"…" "…"` would sit one colon
+away from being a field. The format's core promise is that a line's shape tells
+you what it is, so the first token keeps exactly one meaning.
+
+Tolerant parsing accepts the form anyway, as Appendix C.2.7, because the deviation
+is pure shape: removing the quotes around `"context"` yields `context` byte for
 byte, with no inference about what the author meant. That is the same operation
 C.2.3 already performs on a quoted tag and C.2.4 on a quoted entry id, and it is
 the class of error a translation pipeline actually receives — quoting a key is a
@@ -172,14 +181,13 @@ Three boundaries keep the relaxation from widening anything:
 - **The enclosed text must be a name.** Escapes are not processed and no
   character outside `name-char` is accepted, so the tolerant parser is never
   asked to guess where a quoted key ends.
-- **The strict rule is normative, not a style recommendation.** §6.1 makes a
-  quoted key a validity error, which a validator reports as an error; §5a is the
-  opposite case, where the trailing terminator is legal input that only the style
-  guide discourages. Key quoting therefore has nothing to say to
-  `style/README.md`, exactly as identifier casing — which *is* a project style
-  decision (§5) — has no bearing on whether a document conforms. Canonical
-  serialization is unchanged and normatively so: a serializer emits keys bare, so
-  the relaxed form cannot spread by copy-paste.
+- **Nothing here is style, and nothing is canonicalized differently.** A quoted key
+  is rejected by the grammar rather than by a style recommendation, so it has
+  nothing to say to `style/README.md`, exactly as identifier casing — which *is* a
+  project style decision (§5) — has no bearing on whether a document conforms. §5a
+  is the opposite case and worth keeping distinct: there the trailing terminator is
+  legal input that only the style guide discourages. And because a serializer emits
+  keys bare, the relaxed form cannot spread by copy-paste.
 
 Two neighbouring designs were rejected. Making a quoted key *valid* rather than
 tolerated would put two spellings of every line into the grammar and reintroduce

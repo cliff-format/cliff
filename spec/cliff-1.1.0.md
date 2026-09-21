@@ -429,13 +429,6 @@ Rules:
   a bare lowercase word (`status: final`, `type: noun`, `emotion: [calm]`).
   Quoting one turns it into a string and is a validity error. Only text values
   are quoted. (A tolerant parser MAY accept a quoted tag — Appendix C.2.3.)
-- **Keys are never quoted.** A key is a bare name (`source:`, `status:`,
-  `x-engine:`; `key = name` in the grammar). Wrapping one in quotes is a validity
-  error: a key is a name and never a string, so a reader never has to decide
-  whether a leading quote opens a key or continues the preceding value. A writer
-  never needs the quoted form either, because no key contains a character that
-  quoting would protect. (A tolerant parser MAY accept a quoted key — Appendix
-  C.2.7 — in which case it MUST report the repair.)
 - **No repeated fields.** Every key MAY appear at most once per scope
   (header, group, entry). Duplicates are validity errors. There is no
   "repeatable field" concept; multi-value data is expressed with lists or
@@ -1333,10 +1326,12 @@ first non-whitespace token is a quoted name followed, after optional whitespace,
 by `:` or `=`, is a field line. A line that instead consists only of quoted
 strings is still a continuation line. The relaxation applies to header, group
 metadata and entry fields; the version line, section lines and entry lines carry
-no key and are unaffected. The repair's result is identical to the bare key, so
-the canonical form of §Serialization and the rule of §6.1 are unchanged: a
-serializer emits keys bare, and the quoted form exists only as an input
-relaxation.
+no key and are unaffected. Nothing about the strict grammar changes, because there
+was never a rule to change: a quoted key is not a `name` (§5.5) and §6.1 states no
+case in which the quotes would be well formed, so §6.1 needs no clause about them
+and this appendix adds none. The repair's result is identical to the bare key, so
+the canonical form of §Serialization is unchanged as well: a serializer emits keys
+bare, and the quoted form exists only as an input relaxation.
 
 Relaxations deliberately **not** in this list: trailing `,` / `;` (that is
 standard syntax since 1.1, §5.6, and MUST NOT be reported as a repair), bare

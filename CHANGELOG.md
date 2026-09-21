@@ -26,7 +26,7 @@ exists (§21).
 
 ### Added
 
-- **Relaxation: a quoted key** (Appendix C.2.7, §6.1). A field line written
+- **Relaxation: a quoted key** (Appendix C.2.7). A field line written
   `"context": "…"` — or with single quotes, or with `=` — is now a permitted
   tolerant deviation: the quotes are removed, a `name-quote` repair is reported,
   and the enclosed text is then read as a key under exactly the scope rules a
@@ -37,9 +37,13 @@ exists (§21).
   asked to guess where the key ends. The relaxation is decided before the
   continuation rules: a line whose first token is a quoted name followed by `:`
   or `=` is a field line, while a line of quoted strings only remains a
-  continuation. A serializer still emits keys bare (§Serialization, §6.1), so the
+  continuation. A serializer still emits keys bare (§Serialization), so the
   relaxed form cannot spread. The rationale, including the two neighbouring
   designs that were rejected, is in `docs/design-rationale.md` §5b.
+  **No clause was added to §6.1**: a quoted key already fails the grammar
+  (`key = name`, §5.5), and §6.1 states rules only where the grammar leaves a gap
+  — which is why "tags are never quoted" and "list-typed fields are always
+  written as lists" exist there and this does not.
 - **Optional line terminator** (`, ` or `;`) at the end of any line, at most one,
   meaning nothing and never emitted by a canonical serializer. It is recognized
   only after the line's closing quote or bracket, so a `,` or `;` inside a string

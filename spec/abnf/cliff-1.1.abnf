@@ -82,16 +82,19 @@ list-item            = string / integer / name / language-tag
                       ; a list is single-line and never nests another list.
 
 key                  = name
-                      ; A key is a bare name and is never quoted: no key holds a
-                      ; character that quoting would protect, and the line must
-                      ; say that it is a field (spec 6.1). This rule is not
-                      ; relaxed here - tolerant parsing does not change the ABNF
-                      ; (spec C.1). A tolerant parser MAY accept a quoted key as
-                      ; the documented relaxation of spec C.2.7, in which case it
-                      ; removes the quotes, reports a name-quote repair, and then
-                      ; applies this rule to the enclosed text unchanged: a word
-                      ; that is not a legal key in that scope stays an unknown-key
-                      ; error (spec C.5).
+                      ; A key is a bare name, so a quoted key is a syntax error
+                      ; rather than a rule this grammar has to state: a name holds
+                      ; no character that quoting would protect. The spec says
+                      ; nothing else about it either - 6.1 states rules only where
+                      ; the grammar leaves a gap (a quoted *value* is well formed,
+                      ; which is why C.2.3 must exist; a quoted key is not).
+                      ; Tolerant parsing does not change this rule (spec C.1). A
+                      ; tolerant parser MAY accept a quoted key as the documented
+                      ; relaxation of spec C.2.7, in which case it removes the
+                      ; quotes, reports a name-quote repair, and then applies this
+                      ; rule to the enclosed text unchanged: a word that is not a
+                      ; legal key in that scope stays an unknown-key error (spec
+                      ; C.5).
 
 ; Names: the relaxed CLIFF 1.1 identifier used for keys, entry ids, group path
 ; segments, and the namespace / clan header values. The character set is
