@@ -1299,6 +1299,14 @@ required result and the required diagnostic are given.
    Trigger: an entry ID, group segment, `namespace`, or `clan` that contains a
    character outside `name-char` (§5.5) — for example a space, `&`, `/`, `+`,
    or a dot that was meant as a path separator.
+   **This relaxation applies to an identifier that begins with a name character**,
+   ignoring surrounding whitespace, or that uses the quoted form of C.2.4. A pair
+   of angle brackets that does not enclose such an identifier — a stray closing
+   tag `</terms>`, or `<.hidden>` — is **not an entry marker at all**, and C.5
+   applies to it: the line is rejected with a located, categorized error. A
+   tolerant parser MUST NOT manufacture an entry, a group or an identifier out of
+   markup, because that invents data the document does not contain. The same rule
+   governs the first segment of a group path inside `[...]`.
    Result: the identifier is normalized by the algorithm in §C.3, and the
    canonical ID is then subject to §C.4.
    Diagnostic: category `name-normalized`, carrying the original and the

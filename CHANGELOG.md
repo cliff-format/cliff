@@ -26,6 +26,23 @@ exists (§21).
 
 ### Added
 
+- **Clarification to the identifier relaxation (Appendix C.2.5): markup is not an
+  identifier.** The relaxation applies to an identifier that **begins with a name
+  character** (ignoring surrounding whitespace), or that uses the quoted form of
+  C.2.4. A pair of angle brackets that encloses anything else — a stray closing tag
+  `</terms>`, or `<.hidden>` — is **not an entry marker**, and C.5 rejects the line
+  with a located, categorized error. A tolerant parser MUST NOT manufacture an entry,
+  a group or an identifier out of markup, because that invents data the document does
+  not contain; the same rule governs the first segment of a group path inside `[...]`.
+  The limit was found by a measured model behaviour: a corpus of answers in which the
+  model closes what it opens (`</terms>` after its glossary) produced documents that
+  the reading normalized into an entry named `terms` (C.3 step 4 replaces the slash,
+  step 6 strips it) and then failed on `entry 'terms' is missing required field
+  'source'` — an entry the answer never had, with a diagnostic that pointed at the
+  invented entry instead of at the stray line. The empty-name case is unchanged: an
+  identifier that is empty or whitespace-only still takes the fallback name of C.3
+  step 7. Strict parsing is untouched, and the ABNF's semantic-constraint block now
+  states the limit as well, so it reaches a prompt that injects that block.
 - **Relaxation: a quoted key** (Appendix C.2.7). A field line written
   `"context": "…"` — or with single quotes, or with `=` — is now a permitted
   tolerant deviation: the quotes are removed, a `name-quote` repair is reported,

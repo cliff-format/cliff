@@ -199,3 +199,10 @@ DIGIT                = %x30-39
 ;  * Tolerant parsing (spec Appendix C) is opt-in, is a superset of this
 ;    grammar, MUST report every repair, and MUST NOT guess the items listed in
 ;    Appendix C.5. Its output MUST be valid under this grammar.
+;  * The identifier relaxations of C.2.5 apply to an identifier that **begins**
+;    with a name character (or that uses the quoted form of C.2.4). Angle
+;    brackets that do not enclose such an identifier - a stray closing tag
+;    "</terms>", or "<.hidden>" - are not an entry marker at all, and the line is
+;    rejected under C.5. A tolerant parser MUST NOT manufacture an entry, a group
+;    or an identifier out of markup: that would be guessing data (C.5). The same
+;    rule governs the first segment of a group path inside "[...]".
