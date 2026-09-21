@@ -24,6 +24,28 @@ exists (§21).
   **warning** by default; an implementation may offer an explicit opt-in strict
   mode for projects that keep the convention mandatory (§11, §21).
 
+### Changed
+
+- **The ABNF's injected comment block no longer names markup, and that removed a
+  measured model behaviour.** Three cues were found in it, and all three were ours:
+  the phrase *"single-line marker; no closing tag exists"*, the attribution of the
+  status tags to *"(XLIFF 2.x state model)"*, and — the worst of them — the C.5 note's
+  example, which spelled a stray closing tag literally. That comment block is what a
+  prompt injects when it carries the compressed specification, so the model was being
+  told about closing tags, and about XLIFF, while writing a format whose `<id>` and
+  `[path]` markers already look like XML tags. In a controlled comparison, the same
+  cell and settings with those cues present produced 2–5 answers with a stray closing
+  tag out of 48 (and 58 tags in the 16-answer cell with thinking off); with the cues
+  removed it produced **0 of 48, and 0 tags**.
+  - The rule is still stated, positively: an entry line is a label on one line and what
+    it labels runs to the next entry, the next section or the end of the file. The
+    negative examples stay in Appendix C.2.5, where implementers read them and where no
+    model sees them.
+  - The name is not the trigger. `CLIFF` still appears seven times in that prompt (the
+    block title, the grammar's version-line literal, the worked example) and the
+    behaviour is gone, so the resemblance to XLIFF by itself is not what produced it —
+    the explicit mention of XLIFF and of closing tags was.
+
 ### Added
 
 - **Clarification to the identifier relaxation (Appendix C.2.5): markup is not an

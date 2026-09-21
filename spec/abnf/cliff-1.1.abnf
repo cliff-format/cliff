@@ -61,10 +61,11 @@ group-path           = name *( "." name )
 group-metadata-line  = field-line
 entry                = entry-line *field-line
 entry-line           = *WSP "<" name ">" *WSP [ terminator ] *WSP LF
-                      ; single-line marker; no closing tag exists, and < > in
-                      ; strings remain ordinary payload characters. The entry
-                      ; id is a name: uppercase, digits, "_" and "-" are
-                      ; permitted and case is significant.
+                      ; a label on one line: the entry it labels runs to the next
+                      ; entry line, the next section line, or the end of the file,
+                      ; and inside strings "<" and ">" are ordinary payload
+                      ; characters. The entry id is a name: uppercase, digits, "_"
+                      ; and "-" are permitted and case is significant.
 
 field-line           = *WSP field *WSP [ terminator ] *WSP LF *continuation-line
 continuation-line    = *WSP ( string-value / list ) *WSP [ terminator ] *WSP LF
@@ -170,10 +171,11 @@ DIGIT                = %x30-39
 ;    recommendation (style/README.md), never a validity rule.
 ;  * Fixed tag vocabularies: type, emotion, status, variant. Tag values are
 ;    tag-name (lowercase kebab-case). Status tags are initial, translated,
-;    reviewed, final (XLIFF 2.x state model).
+;    reviewed, final.
 ;  * A field separator is the first "=" or ":" outside a quoted string; the
-;    entry anchor is the single-line marker "<id>". "<" and ">" have no other
-;    structural use and never pair across lines.
+;    entry anchor is the label "<id>" on its own line, and it runs to the next
+;    entry or section line. "<" and ">" carry no other structural meaning and
+;    never pair across lines.
 ;  * A line terminator ("," / ";") is recognized only after the value's
 ;    closing quote or bracket, is never significant, and is never emitted by a
 ;    canonical serializer. At most one is permitted per line; a run of them
@@ -201,8 +203,8 @@ DIGIT                = %x30-39
 ;    Appendix C.5. Its output MUST be valid under this grammar.
 ;  * The identifier relaxations of C.2.5 apply to an identifier that **begins**
 ;    with a name character (or that uses the quoted form of C.2.4). Angle
-;    brackets that do not enclose such an identifier - a stray closing tag
-;    "</terms>", or "<.hidden>" - are not an entry marker at all, and the line is
-;    rejected under C.5. A tolerant parser MUST NOT manufacture an entry, a group
-;    or an identifier out of markup: that would be guessing data (C.5). The same
-;    rule governs the first segment of a group path inside "[...]".
+;    brackets whose content is not such an identifier are not an entry marker:
+;    the line is rejected under C.5, and a tolerant parser MUST NOT manufacture
+;    an entry, a group or an identifier out of it, because that would be guessing
+;    data the document does not contain. The same rule governs the first segment
+;    of a group path inside "[...]". (Appendix C.2.5 gives the cases.)
