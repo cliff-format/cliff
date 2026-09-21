@@ -1,0 +1,23 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  cliff:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the specification
+        uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # The repository's only executable check, and until now the only way to run it was
+      # to know it existed: it validates the example documents and the fenced documents
+      # in the prose. It uses the standard library alone, so there is no install step -
+      # a dependency here would be a dependency in every consumer's build.
+      - name: Examples and document-style fences
+        run: python tools/check_examples.py

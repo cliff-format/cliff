@@ -24,7 +24,7 @@ exists (§21).
   **warning** by default; an implementation may offer an explicit opt-in strict
   mode for projects that keep the convention mandatory (§11, §21).
 
-### Changed
+### Fixed
 
 - **The ABNF's injected comment block no longer names markup, and that removed a
   measured model behaviour.** Three cues were found in it, and all three were ours:
@@ -33,17 +33,23 @@ exists (§21).
   example, which spelled a stray closing tag literally. That comment block is what a
   prompt injects when it carries the compressed specification, so the model was being
   told about closing tags, and about XLIFF, while writing a format whose `<id>` and
-  `[path]` markers already look like XML tags. In a controlled comparison, the same
-  cell and settings with those cues present produced 2–5 answers with a stray closing
-  tag out of 48 (and 58 tags in the 16-answer cell with thinking off); with the cues
-  removed it produced **0 of 48, and 0 tags**.
+  `[path]` markers already look like XML tags. In controlled comparisons of the same
+  cell and settings, the versions with those cues present produced 2–5 answers with a
+  stray closing tag out of 48 (and 58 tags in the 16-answer cell with thinking off);
+  the de-cued version produced 0 of 48 and 0 tags in that cell.
+  - **The rate is per cell, not a property of the prompt.** A later cell with the same
+    de-cued block and a reworded answer-boundary sentence produced 8 of 48, so the
+    honest reading is that de-cueing removed the *vocabulary* (a model told about
+    closing tags writes them) while a residual rate of a few per cent remains, as it
+    did under every other prompt variant measured. The de-cued prompt is what ships;
+    the number to quote is the one the recorded run reports, not the best single cell.
   - The rule is still stated, positively: an entry line is a label on one line and what
     it labels runs to the next entry, the next section or the end of the file. The
     negative examples stay in Appendix C.2.5, where implementers read them and where no
     model sees them.
   - The name is not the trigger. `CLIFF` still appears seven times in that prompt (the
     block title, the grammar's version-line literal, the worked example) and the
-    behaviour is gone, so the resemblance to XLIFF by itself is not what produced it —
+    vocabulary is gone, so the resemblance to XLIFF by itself is not what produced it —
     the explicit mention of XLIFF and of closing tags was.
 
 ### Added
