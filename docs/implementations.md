@@ -30,9 +30,9 @@ a PR adding it here with a link and the conformance row it passed.
 | Token benchmark | [cliff-test/tools/token_benchmark.py](https://github.com/cliff-format/cliff-test/tools/token_benchmark.py) |
 | Edit robustness protocol | [cliff-test/tests/edit-robustness](https://github.com/cliff-format/cliff-test/tests/edit-robustness) |
 | Translation quality corpus | [cliff-test/tests/quality](https://github.com/cliff-format/cliff-test/tests/quality) |
-| **CLARION benchmark** (format-vs-format) | [cliff-test/BENCHMARK.md](https://github.com/cliff-format/cliff-test/BENCHMARK.md) — summary with graphs of the measured evidence + public data bundle |
-| Benchmark data bundle (raw + computed) | [cliff-test/benchmark/clarion-2026-09-02](https://github.com/cliff-format/cliff-test/benchmark/clarion-2026-09-02) |
-| Benchmark tooling | [cliff-test/tools/audit_report.mjs](https://github.com/cliff-format/cliff-test/tools/audit_report.mjs) (audit + unified metrics), [cliff-test/tools/qe_score.py](https://github.com/cliff-format/cliff-test/tools/qe_score.py) (reference-free QE), [cliff-test/tools/package_benchmark.py](https://github.com/cliff-format/cliff-test/tools/package_benchmark.py) (public bundle) |
+| **CLARION benchmark** (format-vs-format) | [cliff-test/BENCHMARK.md](https://github.com/cliff-format/cliff-test/BENCHMARK.md) — the measured evidence (the tables and the protocol behind each) + public data bundle |
+| Benchmark data bundle (raw + computed) | [cliff-test/benchmark/clarion-2026-09-21](https://github.com/cliff-format/cliff-test/benchmark/clarion-2026-09-21) |
+| Benchmark tooling | [cliff-test/tools/audit_report.mjs](https://github.com/cliff-format/cliff-test/tools/audit_report.mjs) (audit + unified metrics), [cliff-test/tools/qe_score.py](https://github.com/cliff-format/cliff-test/tools/qe_score.py) (reference-free QE, optional), [cliff-test/tools/package_benchmark.py](https://github.com/cliff-format/cliff-test/tools/package_benchmark.py) (public bundle) |
 
 ## Third-party implementations
 

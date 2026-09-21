@@ -70,16 +70,34 @@ and iOS on the same corpus, the same model and the same context payload
 (960 real translation calls, 16 documents, 392 entries, public raw evidence and
 computed review data):
 
-- **Token cost** — with the same context payload carried, CLIFF is 11%–196%
-  cheaper than every other format (XLIFF +123%, CSV +196%).
+- **Token cost** — carrying the same context payload, CLIFF's document is the
+  smallest of the ten: 47 499 tokens against 52 753 for yaml-cliff and 140 693 for
+  csv — 11.1% and 196.2% more than CLIFF respectively, the report's `vs CLIFF`
+  column being the other format's excess rather than CLIFF's saving. CLIFF's
+  **prompt**, however, is the most expensive in the plain arm and the third most
+  expensive in the context arm, because it is the only format whose prompt carries a
+  specification block: 2 925 tokens per call, the specification compressed to its
+  rules.
 - **Context fidelity** — 100% round-trip retention vs 97.6% (PO loses header
-  title/info/standard) and 67.3% (plain JSON).
-- **Quality** — with the same context payload, translation quality is identical (the
-  format does not change the model); CLIFF advantage is that the context payload is
-  structurally guaranteed and survives editing.
+  title/info/standard) and 67.3% (plain JSON), over 2 464 context facts and at
+  0.00 repairs per round trip.
+- **Quality** — on the segments a format delivers, translation quality is identical
+  (the format does not change the model): the chrF++ of the answers that parse spans
+  53.3–55.7 across all ten formats. *Delivered* is part of the claim — in the
+  context arm CLIFF failed 4 of its 48 answers and XLIFF 2.1 failed 10 — and CLIFF's
+  advantage is that the context payload is structurally guaranteed and survives
+  editing.
+- **Single-pass rewrite validity** — asked to translate a whole file in one pass,
+  CLIFF returns a valid file in **91.7%** of answers in both arms. Read that column
+  within a format's own row rather than across formats: CLIFF's answers are checked by
+  the official validator, the strictest checker in the comparison, while the other
+  nine only have to parse under theirs. Under those laxer checkers csv's bare arm came
+  in at 89.6% and XLIFF 2.1's context arm at 79.2%. After twelve
+  sequential model edits of the same file CLIFF is still valid **100.0%** of the time
+  bare and **86.1%** context, against XLIFF 2.1's 71.4% / 77.8%.
 
 Summary: [BENCHMARK.md](https://github.com/cliff-format/cliff-test/blob/main/BENCHMARK.md) • public data bundle:
-[benchmark/clarion-2026-09-02](https://github.com/cliff-format/cliff-test/tree/main/benchmark/clarion-2026-09-02) •
+[benchmark/clarion-2026-09-21](https://github.com/cliff-format/cliff-test/tree/main/benchmark/clarion-2026-09-21) •
 reference implementation: [cliff-python](https://github.com/cliff-format/cliff-python).
 
 ## Contributing

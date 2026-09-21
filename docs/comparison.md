@@ -33,10 +33,21 @@ For a 20-entry UI translation set carrying equivalent semantics:
 | JSON | 2.5–2.7× | brackets, quotes, commas per nesting level |
 | XLIFF 2.1/2.2 | 2.5–3× | open+close tag per element |
 
-Measured benchmark output is produced by the separate
+**The table above is an estimate, not a measurement.** It was drawn before the format
+was measured: structural overhead per entry on a 20-entry set, by inspection. The
+exact per-format token costs, with the protocol behind them, are in
+[cliff-test/BENCHMARK.md](https://github.com/cliff-format/cliff-test/blob/main/BENCHMARK.md)
+and its data bundle
+[benchmark/clarion-2026-09-21](https://github.com/cliff-format/cliff-test/tree/main/benchmark/clarion-2026-09-21):
+on the 392-entry CLARION corpus, CLIFF's context-carrying document is **47 499** tokens
+against **52 753** for yaml-cliff and **140 693** for csv. Where the two disagree, the
+measurement is the number to quote — the table describes a hand-sized UI set, the
+measurement a 16-document corpus carrying the full context payload.
+
+Measured benchmark output is also produced by the separate
 [cliff-test](https://github.com/cliff-format/cliff-test) project
-(`cliff-test/tools/token_benchmark.py`) and written to
-`cliff-test/tests/benchmark/report.md`.
+(`cliff-test/tools/token_benchmark.py`, a deterministic 16-unit benchmark) and written
+to `cliff-test/tests/benchmark/report.md`.
 
 ## Why not extend one of the existing formats?
 
