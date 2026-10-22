@@ -8,6 +8,12 @@ reference validator, and the token benchmark live in the separate
 [cliff-test](https://github.com/cliff-format/cliff-test) project; interoperability tools may be separate
 projects as well.
 
+## Branches and pull requests
+
+Development integrates on `dev`; `main` is release-only. Create work branches from `dev` and
+target `dev` with pull requests. Release pull requests merge `dev` into `main` with a merge
+commit; tags are created on `main`. See [docs/version-control.md](docs/version-control.md).
+
 ## What we need
 
 1. **Issues** — ambiguity reports, parser edge cases, and real-world
